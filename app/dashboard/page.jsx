@@ -50,7 +50,7 @@ const page = () => {
           <div>pass data</div>
         </SpotlightCard>
 
-        <SpotlightCard className="custom-spotlight-card" spotlightColor="#1d282c">
+        <SpotlightCard className="custom-spotlight-card" spotlightColor="#222d31">
           <div className="flex items-center gap-2 text-xl font-semibold">
             <ClipboardList className="w-5 h-5" />
             <span>Due Filers</span>

@@ -29,9 +29,9 @@ const AppSidebar = () => {
   const pathname = usePathname()
 
   return (
-    <div className="h-screen ">
-      <div className="text-white text-xl mb-7">
-        logo & name
+    <div className="h-screen sticky top-0 left-0 shadow-neutral-700 shadow-xl">
+      <div className="text-white text-xl my-4 place-items-center ">
+        <h1 className="text-neutral-400 font-bold text-2xl uppercase">Plan 4</h1>
       </div>
 
       <div className="">
