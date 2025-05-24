@@ -20,10 +20,10 @@ const StyledRadio = ({setActiveTab}) => {
 
 const StyledWrapper = styled.div`
   .pill-radio-container {
-    --main-color: #CBCCC6;
-    --secondary-color: #636468;
-    --text-color: #ddd;
-    --pill-bg: #171F22;
+    --main-color: #0F1322;
+    --secondary-color: #0F1322;
+    --text-color: #101E25;
+    --pill-bg: #EEECE8;
     --total-options: 3;
 
     display: flex;
@@ -32,7 +32,7 @@ const StyledWrapper = styled.div`
     border-radius: 1rem;
     padding: 0.5rem;
     gap: 1rem;
-    box-shadow: 0 0 20px #000 inset;
+    box-shadow: 0 0 20px #F5F4F1 inset;
     width: fit-content;
   }
 
@@ -52,7 +52,7 @@ const StyledWrapper = styled.div`
   }
 
   .pill-radio-container input:checked + label {
-    color: #fff;
+    color: #101E25;
   }
 
   .pill-radio-container label:hover {

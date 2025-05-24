@@ -37,12 +37,12 @@ const Page = () => {
   }, [filters])
 
   return (
-    <div className='text-[#B0AEA5] grid grid-rows-[1fr_5fr] p-10 w-full gap-y-4'>
+    <div className='text-[#101E25] grid grid-rows-[1fr_5fr] p-10 w-full gap-y-4'>
       {/* Top Bar: Search & Filters */}
       <div className='flex items-center justify-between '>
         <div className="flex gap-4 items-center">
           <input
-            className='bg-[#1d282c] p-2 rounded-lg'
+            className='bg-[#F5F4F1] p-2 rounded-lg'
             type="text"
             placeholder='Search...'
             value={filters.search}
@@ -52,7 +52,7 @@ const Page = () => {
           <select
             value={filters.type}
             onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-            className='bg-[#1d282c] p-2 rounded-lg'
+            className='bg-[#F5F4F1] p-2 rounded-lg'
           >
             <option value="all">All Types</option>
             <option value="Regular">Regular</option>
@@ -62,7 +62,7 @@ const Page = () => {
           <select
             value={filters.sortBy}
             onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
-            className='bg-[#1d282c] p-2 rounded-lg'
+            className='bg-[#F5F4F1] p-2 rounded-lg'
           >
             <option value="name">Sort by Name</option>
             <option value="createdAt">Sort by Created Date</option>
@@ -79,8 +79,8 @@ const Page = () => {
       </div>
 
       {/* Table Section */}
-      <div className='bg-[#1d282c] border border-neutral-700 rounded-lg p-4'>
-        <div className="text-base font-semibold mb-4 grid grid-cols-6 uppercase text-white/70">
+      <div className='bg-[#F5F4F1] rounded-4xl p-4'>
+        <div className="text-base font-semibold mb-4 grid grid-cols-6 uppercase ">
           <div>Company Name</div>
           <div>Owner Name</div>
           <div>GSTR-1</div>
@@ -99,9 +99,9 @@ const Page = () => {
               return (
                 <div
                   key={customer._id}
-                  className='bg-[#253338] p-4 rounded-lg grid grid-cols-6 items-center text-sm hover:bg-[#2e3e43] transition'
+                  className='bg-[#EEECE8] p-4 rounded-lg grid grid-cols-6 items-center text-sm hover:bg-[#c4c2be] transition'
                 >
-                  <div className="font-semibold text-white">{customer.companyName}</div>
+                  <div className="font-semibold ">{customer.companyName}</div>
                   <div>{customer.registeredOwner.name}</div>
 
                   <div className={filing?.gstr1?.status === 'Filed' ? 'text-green-500' : 'text-red-400'}>

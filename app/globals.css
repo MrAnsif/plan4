@@ -4,8 +4,10 @@
 @custom-variant dark (&:is(.dark *));
 
 html, body {
-  background-color: #171F22;
+  background-color: #EEECE8;
 }
+
+
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
