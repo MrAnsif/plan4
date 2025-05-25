@@ -36,15 +36,15 @@ const chartConfig = {
 export function PieComponent({ regular, composition }) {
 
   const chartData = [
-    { browser: "regular", visitors: regular, fill: "#F27867" },
-    { browser: "composition", visitors: composition, fill: "#F2638B" },
+    { browser: "regular", visitors: regular, fill: "#E4BDA9" },
+    { browser: "composition", visitors: composition, fill: "#DE999F" },
   ]
 
   return (
-    <Card className="flex flex-col rounded-4xl bg-[#F5F4F1] text-[#101E25]">
+    <Card className="flex flex-col rounded-4xl bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-[#EEECE8]">
       <CardHeader className="items-center pb-0">
         <CardTitle className=' text-2xl'>Pie Chart</CardTitle>
-        <CardDescription>This chart shows the filing preference of Customers</CardDescription>
+        <CardDescription className='text-neutral-300'>This chart shows the filing preference of Customers</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer

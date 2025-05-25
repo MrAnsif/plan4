@@ -25,7 +25,9 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex`}
       >
         <AppSidebar />
-        {children}
+        <span className="w-full">
+          {children}
+        </span>
       </body>
     </html>
   );

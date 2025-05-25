@@ -1,7 +1,7 @@
 export const gstFilings = [
   {
     _id: '101',
-    customerId: '1',
+    customerId: '683182655dfcacc5af68f7e6',
     month: "2024-05",
     gstr1: {
       status: "Filed",
@@ -18,7 +18,7 @@ export const gstFilings = [
   },
   {
     _id: '102',
-    customerId: '1',
+    customerId: '683182ee5dfcacc5af68f7e8',
     month: "2024-06",
     gstr1: {
       status: "Pending",

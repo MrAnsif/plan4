@@ -1,9 +1,8 @@
 'use client'
 
 import { PieComponent } from '@/src/components/PieChart'
-import SpotlightCard from '@/src/components/SpotlightCard/SpotlightCard'
 import { File } from 'lucide-react'
-import { Users, AlertTriangle, ShieldAlert, BellRing } from 'lucide-react'
+import { Users, BellRing } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 const page = () => {
@@ -31,16 +30,16 @@ const page = () => {
   console.log(stats)
 
   return (
-    <div className="grid grid-cols-[1fr_2fr] text-[#101E25] px-10 py-5 w-full">
+    <div className="grid grid-cols-[1fr_2fr] text-[#101E25] px-10 py-5 w-full h-screen overflow-y-hidden">
 
-      <div className="grid py-2">
-        <SpotlightCard className="custom-spotlight-card m-4" spotlightColor="#526667">
+      <div className="flex flex-col py-2">
+        <div className="relative rounded-4xl bg-[#F5F4F1] overflow-hidden p-8 m-4" >
           <div className="flex items-center gap-2 text-2xl font-semibold ">
             <Users className="w-6 h-6" />
             <span>Total Customers</span>
           </div>
           <h1 className='text-6xl font-bold'>{stats.totalCustomers}</h1>
-        </SpotlightCard>
+        </div>
 
         <div className='m-4'>
           <PieComponent regular={regularCount} composition={compositionCount} />
@@ -48,58 +47,62 @@ const page = () => {
       </div>
 
 
-      <div className="grid grid-rows-2 gap-x-3 px-6 py-2">
-        <SpotlightCard className="custom-spotlight-card m-4" spotlightColor="#1d282c">
-          <div className=" text-2xl font-semibold">
+      <div className="flex flex-col gap-x-3 px-6 py-2">
+        <div className="relative rounded-4xl bg-[#F5F4F1] overflow-hidden h-[45dvh] px-8 py-5 mt-4 flex flex-col">
+          <div className="text-2xl font-semibold flex-shrink-0">
             <div className='flex items-center gap-2 mb-2'>
               <BellRing className="w-5 h-5" />
               <span>Upcoming Filers</span>
             </div>
-            <div className='grid grid-cols-3 text-sm text-neutral-700/80 my-1'>
+            <div className='grid grid-cols-3 text-sm text-neutral-700/80 my-1 pb-2'>
               <h1>Company Name</h1>
               <h1>Registration Type</h1>
               <h1>Filing Start Date</h1>
             </div>
           </div>
-          {
-            stats.upcomingFilers.map((e, index) => {
 
-              return (
-                <div className='grid grid-cols-3 text-xl h-auto bg-[#EEECE8] pl-2 py-3 mb-2 rounded-lg' key={index}>
-                  <h1 className='font-semibold'>{e.companyName}</h1>
-                  <h1>{e.gstDetails.typeOfRegistration}</h1>
-                  <h1>{new Date(e.gstDetails.filingStartDate).toLocaleDateString('en-IN')}</h1>
-                </div>
-              )
-            })
-          }
-        </SpotlightCard>
+          <div className="flex-1 overflow-y-auto">
+            {
+              stats.upcomingFilers.map((e, index) => {
+                return (
+                  <div className='grid grid-cols-3 text-base h-auto bg-[#EEECE8] pl-2 py-3 mb-2 rounded-lg' key={index}>
+                    <h1 className='font-semibold'>{e.companyName}</h1>
+                    <h1>{e.gstDetails.typeOfRegistration}</h1>
+                    <h1>{new Date(e.gstDetails.filingStartDate).toLocaleDateString('en-IN')}</h1>
+                  </div>
+                )
+              })
+            }
+          </div>
+        </div>
 
-        <SpotlightCard className="custom-spotlight-card m-4" spotlightColor="#526667">
-          <div className="text-2xl font-semibold ">
+        <div className="relative rounded-4xl bg-[#F5F4F1] overflow-hidden h-[45dvh]  px-8 py-5 mt-4 flex flex-col">
+          <div className="text-2xl font-semibold flex-shrink-0">
             <div className='flex items-center gap-2 mb-2'>
               <File className="w-6 h-6" />
               <span>Recent registrations</span>
             </div>
-            <div className='grid grid-cols-3 text-sm text-neutral-700/80 my-1'>
+            <div className='grid grid-cols-3 text-sm text-neutral-700/80 my-1 pb-2'>
               <h1>Company Name</h1>
               <h1>Phone</h1>
               <h1>Added Date</h1>
             </div>
           </div>
 
-          {
-            stats.recentRegistrations.map((e, index) => {
-              return (
-                <div className='grid grid-cols-3 text-xl h-auto bg-[#EEECE8] pl-2 py-3 mb-2 rounded-lg' key={index}>
-                  <h1 className='font-semibold'>{e.companyName}</h1>
-                  <h1 className=''>{e.companyPhone}</h1>
-                  <h1 className=''>{new Date(e.createdAt).toLocaleDateString('en-IN')}</h1>
-                </div>
-              )
-            })
-          }
-        </SpotlightCard>
+          <div className="flex-1 overflow-y-auto">
+            {
+              stats.recentRegistrations.map((e, index) => {
+                return (
+                  <div className='grid grid-cols-3 text-base h-auto bg-[#EEECE8] pl-2 py-3 mb-2 rounded-lg' key={index}>
+                    <h1 className='font-semibold'>{e.companyName}</h1>
+                    <h1 className=''>{e.companyPhone}</h1>
+                    <h1 className=''>{new Date(e.createdAt).toLocaleDateString('en-IN')}</h1>
+                  </div>
+                )
+              })
+            }
+          </div>
+        </div>
 
       </div>
 

@@ -5,6 +5,7 @@ import { Building } from 'lucide-react'
 import StyledRadio from '@/src/components/StyledRadio'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
+import Loader from '@/src/components/StyledLoader'
 
 
 const page = () => {
@@ -12,7 +13,35 @@ const page = () => {
   const id = params.id
 
   const [activeTab, setActiveTab] = useState('overview')
-  const [customerDetails, setCustomerDetails] = useState(null)
+  const [customerDetails, setCustomerDetails] = useState({
+    companyName: '',
+    companyAddress: '',
+    companyPhone: '',
+    registeredOwner: {
+      ownerName: '',
+      ownerAddress: '',
+      ownerPhone: '',
+      ownerEmail: '',
+    },
+    gstDetails: {
+      gstNumber: '',
+      typeOfRegistration: '',
+      dateOfRegistration: '',
+      filingStartDate: '',
+      serviceOrSales: '',
+      totalTax: 0,
+      otherExpense: 0,
+      cgst: 0,
+      sgst: 0,
+      igst: 0,
+      cess: 0,
+    },
+    businessDetails: {
+      buildingStatus: '',
+      rentAmount: 0,
+      additionalBranches: [],
+    }
+  })
   const [loading, setLoading] = useState(true)
 
 
@@ -39,17 +68,16 @@ const page = () => {
   console.log('customer data:', customerDetails)
 
   if (loading) {
-    return <div className='text-2xl left-1/2 top-1/2 w-4/5 h-screen'>Loading...</div>
+    return <div className="place-content-center"><Loader /></div>
   }
 
   return (
     <div className='text-[#101E25] p-10 w-full gap-y-4'>
 
       <StyledRadio setActiveTab={setActiveTab} />
-
       {activeTab === 'overview' &&
         (<div className=' flex flex-col gap-4'>
-          <div className='w-full  rounded-lg bg-[#F5F4F1] p-4 text-lg '>
+          <div className='w-full  rounded-4xl bg-[#F5F4F1] p-4 text-lg '>
             <h1 className='text-2xl font-bold flex items-center gap-2 underline'>
               <User />
               Owner Details</h1>
@@ -60,7 +88,7 @@ const page = () => {
               <h1> <strong>Email:</strong> {customerDetails.registeredOwner.ownerEmail}</h1>
             </div>
           </div>
-          <div className='w-full rounded-lg  bg-[#F5F4F1] p-4 text-lg'>
+          <div className='w-full rounded-4xl  bg-[#F5F4F1] p-4 text-lg'>
             <h1 className='text-2xl font-bold flex items-center gap-2 underline'>
               <Building />
               Company Details</h1>
@@ -79,10 +107,22 @@ const page = () => {
               <h1><strong>Service or Sales:</strong> {customerDetails.gstDetails.serviceOrSales}</h1>
               <h1><strong>Total Tax:</strong> ₹{customerDetails.gstDetails.totalTax?.toLocaleString('en-IN')}</h1>
               <h1><strong>Other Expense:</strong> ₹{customerDetails.gstDetails.otherExpense?.toLocaleString('en-IN')}</h1>
-              <h1><strong>CGST:</strong> ₹{customerDetails.gstDetails.cgst?.toLocaleString('en-IN')}</h1>
-              <h1><strong>SGST:</strong> ₹{customerDetails.gstDetails.sgst?.toLocaleString('en-IN')}</h1>
-              <h1><strong>IGST:</strong> ₹{customerDetails.gstDetails.igst?.toLocaleString('en-IN')}</h1>
-              <h1><strong>Cess:</strong> ₹{customerDetails.gstDetails.cess?.toLocaleString('en-IN')}</h1>
+              {
+                customerDetails.gstDetails.typeOfRegistration === 'Regular' ? (
+                  <>
+                    <h1><strong>CGST:</strong> ₹{customerDetails.gstDetails.cgst?.toLocaleString('en-IN')}</h1>
+                    <h1><strong>SGST:</strong> ₹{customerDetails.gstDetails.sgst?.toLocaleString('en-IN')}</h1>
+                    <h1><strong>IGST:</strong> ₹{customerDetails.gstDetails.igst?.toLocaleString('en-IN')}</h1>
+                    <h1><strong>Cess:</strong> ₹{customerDetails.gstDetails.cess?.toLocaleString('en-IN')}</h1>
+                  </>
+                ) : (
+                  <>
+                    <h1><strong>Composition Rate:</strong> {customerDetails.gstDetails.compositionRate}%</h1>
+                    <h1><strong>Cess:</strong> ₹{customerDetails.gstDetails.cess?.toLocaleString('en-IN')}</h1>
+                  </>
+                )
+              }
+
             </div>
 
             <h1 className='text-2xl font-bold underline'>Business Details</h1>

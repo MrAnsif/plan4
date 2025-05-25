@@ -7,8 +7,25 @@ html, body {
   background-color: #EEECE8;
 }
 
+* {
+  scrollbar-width: thin;              /* For Firefox */
+  scrollbar-color: #888 #eee;         /* thumb color track color */
+}
 
+/* For Chrome, Edge, Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
 
+*::-webkit-scrollbar-track {
+  background: #eee;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

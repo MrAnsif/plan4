@@ -2,10 +2,10 @@ import Customer from "@/models/customer";
 import connectMongo from "@/lib/mongodb";
 
 
-export async function GET(req, { params }) {
+export async function GET(request, { params }) {
     try {
         await connectMongo()
-        const customerId = params.id
+        const { id: customerId } = await params
 
         const customerDetails = await Customer.findById(customerId)
 
