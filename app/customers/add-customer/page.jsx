@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { User, Building, Plus, Minus } from 'lucide-react'
+import { User, Building, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Trash2 } from 'lucide-react'
 import Loader from '@/src/components/StyledLoader'
@@ -36,7 +36,7 @@ const page = () => {
     businessDetails: {
       buildingStatus: 'Owned',
       rentAmount: '',
-      additionalBranches: [], // Changed from [''] to []
+      additionalBranches: [], 
     }
   })
 

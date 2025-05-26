@@ -4,13 +4,16 @@ import { User } from 'lucide-react'
 import { Building } from 'lucide-react'
 import StyledRadio from '@/src/components/StyledRadio'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Loader from '@/src/components/StyledLoader'
+import { UserMinus } from 'lucide-react'
+import { UserPen } from 'lucide-react'
 
 
 const page = () => {
   const params = useParams();
   const id = params.id
+  const router = useRouter()
 
   const [activeTab, setActiveTab] = useState('overview')
   const [customerDetails, setCustomerDetails] = useState({
@@ -44,8 +47,6 @@ const page = () => {
   })
   const [loading, setLoading] = useState(true)
 
-
-
   useEffect(() => {
     if (!id) return;
 
@@ -65,7 +66,25 @@ const page = () => {
     fetchDetails()
   }, [id])
 
-  console.log('customer data:', customerDetails)
+
+
+  const handleDelete = () => {
+    const confirmed = confirm("Are you sure you want to delete this Customer?")
+    if (confirmed) {
+      try {
+        fetch(`/api/customer/${id}`, { method: "DELETE" })
+          .then(res => res.json())
+          .then(() => {
+            alert('Customer deleted.')
+            router.push('/customers')
+          })
+      } catch (error) {
+        console.error('Failed to delete customer', error);
+      }
+    }
+  }
+
+
 
   if (loading) {
     return <div className="place-content-center"><Loader /></div>
@@ -73,8 +92,14 @@ const page = () => {
 
   return (
     <div className='text-[#101E25] p-10 w-full gap-y-4'>
+      <div className='flex items-center justify-between'>
+        <StyledRadio setActiveTab={setActiveTab} />
+        <div className="flex gap-10 pr-5">
+          <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/edit`)}} ><UserPen width={20} height={24} /> Edit Details</button>
+          <button className='flex gap-1 font-semibold text-red-500 hover:underline' onClick={handleDelete}><UserMinus width={20} height={24} /> Delete Customer</button>
+        </div>
+      </div>
 
-      <StyledRadio setActiveTab={setActiveTab} />
       {activeTab === 'overview' &&
         (<div className=' flex flex-col gap-4'>
           <div className='w-full  rounded-4xl bg-[#F5F4F1] p-4 text-lg '>
