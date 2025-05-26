@@ -77,6 +77,17 @@ export async function GET() {
 
     const upcomingFilers = await Customer.find(dateFilter)
       .select('companyName gstDetails.typeOfRegistration gstDetails.filingStartDate')
+      
+    upcomingFilers.sort((a, b) => {
+      const dateA = new Date(a.gstDetails.filingStartDate)
+      const dateB = new Date(b.gstDetails.filingStartDate)
+
+      // Compare month first, then day (ignoring year)
+      if (dateA.getMonth() !== dateB.getMonth()) {
+        return dateA.getMonth() - dateB.getMonth()
+      }
+      return dateA.getDate() - dateB.getDate()
+    })
 
 
     // recent registration

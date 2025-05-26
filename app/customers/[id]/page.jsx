@@ -2,20 +2,21 @@
 
 import { User } from 'lucide-react'
 import { Building } from 'lucide-react'
-import StyledRadio from '@/src/components/StyledRadio'
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Loader from '@/src/components/StyledLoader'
 import { UserMinus } from 'lucide-react'
 import { UserPen } from 'lucide-react'
-
+import { RefreshCcw } from 'lucide-react'
 
 const page = () => {
   const params = useParams();
   const id = params.id
   const router = useRouter()
 
-  const [activeTab, setActiveTab] = useState('overview')
+
+  const [error, setError] = useState(null)
+
   const [customerDetails, setCustomerDetails] = useState({
     companyName: '',
     companyAddress: '',
@@ -55,191 +56,206 @@ const page = () => {
         const res = await fetch(`/api/customer/${id}`, {
           cache: "no-store"
         })
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch customer: ${res.status} ${res.statusText}`)
+        }
+
         const data = await res.json()
-        setCustomerDetails(data)
+
+        if (!data) {
+          throw new Error('No customer data received')
+        }
+
+        const safeData = {
+          companyName: data.companyName || '',
+          companyAddress: data.companyAddress || '',
+          companyPhone: data.companyPhone || '',
+          registeredOwner: {
+            ownerName: data.registeredOwner?.ownerName || '',
+            ownerAddress: data.registeredOwner?.ownerAddress || '',
+            ownerPhone: data.registeredOwner?.ownerPhone || '',
+            ownerEmail: data.registeredOwner?.ownerEmail || '',
+          },
+          gstDetails: {
+            gstNumber: data.gstDetails?.gstNumber || '',
+            typeOfRegistration: data.gstDetails?.typeOfRegistration || '',
+            dateOfRegistration: data.gstDetails?.dateOfRegistration || '',
+            filingStartDate: data.gstDetails?.filingStartDate || '',
+            serviceOrSales: data.gstDetails?.serviceOrSales || '',
+            totalTax: data.gstDetails?.totalTax || 0,
+            otherExpense: data.gstDetails?.otherExpense || 0,
+            cgst: data.gstDetails?.cgst || 0,
+            sgst: data.gstDetails?.sgst || 0,
+            igst: data.gstDetails?.igst || 0,
+            cess: data.gstDetails?.cess || 0,
+            compositionRate: data.gstDetails?.compositionRate || 0,
+          },
+          businessDetails: {
+            buildingStatus: data.businessDetails?.buildingStatus || '',
+            rentAmount: data.businessDetails?.rentAmount || 0,
+            additionalBranches: data.businessDetails?.additionalBranches || [],
+          }
+        }
+
+        setCustomerDetails(safeData)
+        setError(null)
+
       } catch (error) {
         console.error('Failed to load customer:', error);
+        setError(error.message || 'Failed to load customer data')
       } finally {
         setLoading(false)
       }
     }
+
     fetchDetails()
   }, [id])
 
-
-
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const confirmed = confirm("Are you sure you want to delete this Customer?")
     if (confirmed) {
       try {
-        fetch(`/api/customer/${id}`, { method: "DELETE" })
-          .then(res => res.json())
-          .then(() => {
-            alert('Customer deleted.')
-            router.push('/customers')
-          })
+        const res = await fetch(`/api/customer/${id}`, { method: "DELETE" })
+
+        if (!res.ok) {
+          throw new Error('Failed to delete customer')
+        }
+
+        const result = await res.json()
+        alert('Customer deleted.')
+        router.push('/customers')
+
       } catch (error) {
         console.error('Failed to delete customer', error);
+        alert('Failed to delete customer. Please try again.')
       }
     }
   }
 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Not provided'
+    try {
+      return new Date(dateString).toLocaleDateString('en-IN')
+    } catch {
+      return 'Invalid date'
+    }
+  }
 
+  const formatCurrency = (amount) => {
+    if (amount === null || amount === undefined || isNaN(amount)) return '₹0'
+    return `₹${Number(amount).toLocaleString('en-IN')}`
+  }
 
   if (loading) {
     return <div className="place-content-center"><Loader /></div>
   }
 
+  if (error) {
+    return (
+      <div className='text-[#101E25] p-10 w-full'>
+        <div className='flex flex-col items-center justify-center min-h-[400px] gap-4'>
+          <div className='text-red-300 text-xl font-semibold'>Error Loading Customer</div>
+          <div className='text-gray-400'>{error}</div>
+          <div className='flex gap-4'>
+            <button
+              onClick={() => window.location.reload()}
+              className='px-4 py-2 bg-gradient-to-tr from-[#f25ca0] to-[#f1765b] text-white rounded-4xl hover:bg-gradient-to-bl hover:from-[#c1497f] hover:to-[#b35743]'
+            >
+              Try Again
+            </button>
+            <button
+              onClick={() => router.push('/customers')}
+              className='px-4 py-2 bg-[#0f1322b7] text-white rounded-4xl hover:bg-[#0f1322cb]'
+            >
+              Back to Customers
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className='text-[#101E25] p-10 w-full gap-y-4'>
-      <div className='flex items-center justify-between'>
-        <StyledRadio setActiveTab={setActiveTab} />
-        <div className="flex gap-10 pr-5">
-          <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/edit`)}} ><UserPen width={20} height={24} /> Edit Details</button>
+      <div className='flex items-center justify-between mb-7 px-5'>
+        <h1 className='text-3xl font-bold'>Customer Details</h1>
+        <div className="flex gap-10">
+          <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/edit`) }} ><UserPen width={20} height={24} /> Edit Details</button>
           <button className='flex gap-1 font-semibold text-red-500 hover:underline' onClick={handleDelete}><UserMinus width={20} height={24} /> Delete Customer</button>
         </div>
       </div>
 
-      {activeTab === 'overview' &&
-        (<div className=' flex flex-col gap-4'>
-          <div className='w-full  rounded-4xl bg-[#F5F4F1] p-4 text-lg '>
-            <h1 className='text-2xl font-bold flex items-center gap-2 underline'>
-              <User />
-              Owner Details</h1>
-            <div className='my-2 pb-3 grid grid-cols-2'>
-              <h1> <strong>Owner Name:</strong> {customerDetails.registeredOwner.ownerName}</h1>
-              <h1> <strong>Address:</strong> {customerDetails.registeredOwner.ownerAddress}</h1>
-              <h1> <strong>Phone:</strong> {customerDetails.registeredOwner.ownerPhone}</h1>
-              <h1> <strong>Email:</strong> {customerDetails.registeredOwner.ownerEmail}</h1>
-            </div>
+      <div className=' flex flex-col gap-4'>
+        <div className='w-full  rounded-4xl bg-[#F5F4F1] p-4 text-lg '>
+          <h1 className='text-2xl font-bold flex items-center gap-2 underline'>
+            <User />
+            Owner Details</h1>
+          <div className='my-2 pb-3 grid grid-cols-2'>
+            <h1> <strong>Owner Name:</strong> {customerDetails.registeredOwner?.ownerName || 'Not provided'}</h1>
+            <h1> <strong>Address:</strong> {customerDetails.registeredOwner?.ownerAddress || 'Not provided'}</h1>
+            <h1> <strong>Phone:</strong> {customerDetails.registeredOwner?.ownerPhone || 'Not provided'}</h1>
+            <h1> <strong>Email:</strong> {customerDetails.registeredOwner?.ownerEmail || 'Not provided'}</h1>
           </div>
-          <div className='w-full rounded-4xl  bg-[#F5F4F1] p-4 text-lg'>
-            <h1 className='text-2xl font-bold flex items-center gap-2 underline'>
-              <Building />
-              Company Details</h1>
-            <div className='my-2 pb-3 border-b border-b-orange-100 border-neutral-700'>
-              <h1><strong>Company Name:</strong> {customerDetails.companyName}</h1>
-              <h1><strong>Address:</strong> {customerDetails.companyAddress}</h1>
-              <h1><strong>Phone:</strong> {customerDetails.companyPhone}</h1>
-            </div>
+        </div>
 
-            <h1 className='text-2xl font-bold underline'>GST Details</h1>
-            <div className='my-2 pb-3 border-b border-b-orange-100 border-neutral-700'>
-              <h1><strong>GST Number:</strong> {customerDetails.gstDetails.gstNumber}</h1>
-              <h1><strong>Type of Registration:</strong> {customerDetails.gstDetails.typeOfRegistration}</h1>
-              <h1><strong>Date of Registration:</strong> {new Date(customerDetails.gstDetails.dateOfRegistration).toLocaleDateString('en-IN')}</h1>
-              <h1><strong>Filing Start Date:</strong> {new Date(customerDetails.gstDetails.filingStartDate).toLocaleDateString('en-IN')}</h1>
-              <h1><strong>Service or Sales:</strong> {customerDetails.gstDetails.serviceOrSales}</h1>
-              <h1><strong>Total Tax:</strong> ₹{customerDetails.gstDetails.totalTax?.toLocaleString('en-IN')}</h1>
-              <h1><strong>Other Expense:</strong> ₹{customerDetails.gstDetails.otherExpense?.toLocaleString('en-IN')}</h1>
+        <div className='w-full rounded-4xl  bg-[#F5F4F1] p-4 text-lg'>
+          <h1 className='text-2xl font-bold flex items-center gap-2 underline'>
+            <Building />
+            Company Details</h1>
+          <div className='my-2 pb-3 border-b border-b-gray-300'>
+            <h1><strong>Company Name:</strong> {customerDetails.companyName || 'Not provided'}</h1>
+            <h1><strong>Address:</strong> {customerDetails.companyAddress || 'Not provided'}</h1>
+            <h1><strong>Phone:</strong> {customerDetails.companyPhone || 'Not provided'}</h1>
+          </div>
+
+          <h1 className='text-2xl font-bold underline'>GST Details</h1>
+          <div className='my-2 pb-3 border-b border-b-gray-300 grid grid-cols-2'>
+            <span>
+              <h1><strong>GST Number:</strong> {customerDetails.gstDetails?.gstNumber || 'Not provided'}</h1>
+              <h1><strong>Type of Registration:</strong> {customerDetails.gstDetails?.typeOfRegistration || 'Not provided'}</h1>
+              <h1><strong>Date of Registration:</strong> {formatDate(customerDetails.gstDetails?.dateOfRegistration)}</h1>
+              <h1><strong>Filing Start Date:</strong> {formatDate(customerDetails.gstDetails?.filingStartDate)}</h1>
+              <h1><strong>Service or Sales:</strong> {customerDetails.gstDetails?.serviceOrSales || 'Not provided'}</h1>
+              <h1><strong>Total Tax:</strong> {formatCurrency(customerDetails.gstDetails?.totalTax)}</h1>
+              <h1><strong>Other Expense:</strong> {formatCurrency(customerDetails.gstDetails?.otherExpense)}</h1>
+            </span>
+            <span>
               {
-                customerDetails.gstDetails.typeOfRegistration === 'Regular' ? (
+                customerDetails.gstDetails?.typeOfRegistration === 'Regular' ? (
                   <>
-                    <h1><strong>CGST:</strong> ₹{customerDetails.gstDetails.cgst?.toLocaleString('en-IN')}</h1>
-                    <h1><strong>SGST:</strong> ₹{customerDetails.gstDetails.sgst?.toLocaleString('en-IN')}</h1>
-                    <h1><strong>IGST:</strong> ₹{customerDetails.gstDetails.igst?.toLocaleString('en-IN')}</h1>
-                    <h1><strong>Cess:</strong> ₹{customerDetails.gstDetails.cess?.toLocaleString('en-IN')}</h1>
+                    <h1><strong>CGST:</strong> {formatCurrency(customerDetails.gstDetails?.cgst)}</h1>
+                    <h1><strong>SGST:</strong> {formatCurrency(customerDetails.gstDetails?.sgst)}</h1>
+                    <h1><strong>IGST:</strong> {formatCurrency(customerDetails.gstDetails?.igst)}</h1>
+                    <h1><strong>Cess:</strong> {formatCurrency(customerDetails.gstDetails?.cess)}</h1>
                   </>
                 ) : (
                   <>
-                    <h1><strong>Composition Rate:</strong> {customerDetails.gstDetails.compositionRate}%</h1>
-                    <h1><strong>Cess:</strong> ₹{customerDetails.gstDetails.cess?.toLocaleString('en-IN')}</h1>
+                    <h1><strong>Composition Rate:</strong> {customerDetails.gstDetails?.compositionRate || 0}%</h1>
+                    <h1><strong>Cess:</strong> {formatCurrency(customerDetails.gstDetails?.cess)}</h1>
                   </>
                 )
               }
+            </span>
+          </div>
 
-            </div>
-
-            <h1 className='text-2xl font-bold underline'>Business Details</h1>
-            <div className='my-2 pb-3 border-b border-b-orange-100 border-neutral-700'>
-              <h1><strong>Building Status:</strong> {customerDetails.businessDetails.buildingStatus}</h1>
-              <h1><strong>Rent Amount:</strong> ₹{customerDetails.businessDetails.rentAmount?.toLocaleString('en-IN')}</h1>
-              <h1><strong>Additional Branches:</strong></h1>
-              <ul className='ml-4 mt-2'>
-                {customerDetails.businessDetails.additionalBranches?.map((branch, index) => (
+          <h1 className='text-2xl font-bold underline'>Business Details</h1>
+          <div className='my-2 pb-3'>
+            <h1><strong>Building Status:</strong> {customerDetails.businessDetails?.buildingStatus || 'Not provided'}</h1>
+            <h1><strong>Rent Amount:</strong> {formatCurrency(customerDetails.businessDetails?.rentAmount)}</h1>
+            <h1><strong>Additional Branches:</strong></h1>
+            <ul className='ml-4 mt-2'>
+              {customerDetails.businessDetails?.additionalBranches?.length > 0 ? (
+                customerDetails.businessDetails.additionalBranches.map((branch, index) => (
                   <li key={index} className='list-disc'>{branch}</li>
-                ))}
-              </ul>
-            </div>
-
+                ))
+              ) : (
+                <li className='list-none text-gray-500'>No additional branches</li>
+              )}
+            </ul>
           </div>
-        </div>)
-      }
-
-      {activeTab === 'filingDetails' &&
-        (
-          <div className='my-4'>
-            <h3 className="text-lg font-semibold mb-3 text-neutral-400">Filing History</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-neutral-700 rounded-lg">
-                <thead className="bg-[#1d282c9d]">
-                  <tr>
-                    <th className="border border-neutral-700 px-4 py-3 text-left font-semibold text-neutral-300">Month</th>
-                    <th className="border border-neutral-700 px-4 py-3 text-left font-semibold text-neutral-300">GSTR-1</th>
-                    <th className="border border-neutral-700 px-4 py-3 text-left font-semibold text-neutral-300">GSTR-3B</th>
-                    <th className="border border-neutral-700 px-4 py-3 text-left font-semibold text-neutral-300">Compounding</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filingData?.map((filing) => (
-                    <tr key={filing._id} className="hover:bg-[#e7e4de]">
-                      <td className="border border-neutral-700 px-4 py-3 font-medium">
-                        {new Date(filing.month + '-01').toLocaleDateString('en-IN', {
-                          year: 'numeric',
-                          month: 'long'
-                        })}
-                      </td>
-                      <td className="border border-neutral-700 px-4 py-3">
-                        <div className="space-y-1">
-                          <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${filing.gstr1?.status === 'Filed'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-yellow-100 text-yellow-800'
-                            }`}>
-                            {filing.gstr1?.status || 'Not Filed'}
-                          </span>
-                          {filing.gstr1?.dateFiled && (
-                            <div className="text-xs text-neutral-400">
-                              Filed: {new Date(filing.gstr1.dateFiled).toLocaleDateString()}
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="border border-neutral-700 px-4 py-3">
-                        <div className="space-y-1">
-                          <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${filing.gstr3b?.status === 'Filed'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-yellow-100 text-yellow-800'
-                            }`}>
-                            {filing.gstr3b?.status || 'Not Filed'}
-                          </span>
-                          {filing.gstr3b?.dateFiled && (
-                            <div className="text-xs text-neutral-400">
-                              Filed: {new Date(filing.gstr3b.dateFiled).toLocaleDateString()}
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="border border-neutral-700 px-4 py-3">
-                        <div className="space-y-1">
-                          <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${filing.compounding?.status === 'Filed'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-yellow-100 text-yellow-800'
-                            }`}>
-                            {filing.compounding?.status || 'Not Filed'}
-                          </span>
-                          <div className="text-xs text-neutral-400">
-                            Quarter: {filing.compounding?.quarter || 'N/A'}
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )
-      }
+        </div>
+      </div>
     </div>
   )
 }
