@@ -95,7 +95,9 @@ const AppSidebar = () => {
       `}>
         <div>
           <div className="text-white text-xl my-4 place-items-center px-4">
-            <h1 className="text-neutral-300 font-bold text-2xl uppercase">Plan 4</h1>
+            <Link href='/dashboard'>
+              <h1 className="text-neutral-300 font-bold text-2xl uppercase">Plan 4</h1>
+            </Link>
           </div>
 
           <div className="pr-2">
