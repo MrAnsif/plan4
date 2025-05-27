@@ -74,7 +74,7 @@ const AppSidebar = () => {
     <>
       <button
         onClick={toggleMobileMenu}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-[#EDEBE7] text-[#0F1322] rounded-md shadow-lg hover:bg-[#1a2332] transition-colors"
+        className={`md:hidden fixed top-2 left-2 z-50 p-1 bg-[#EDEBE7] text-[#0F1322] rounded-md shadow-lg hover:bg-[#1a2332] transition-colors ${isMobileMenuOpen && '!bg-[#1a2332] text-[#EDEBE7]'} `}
         aria-label="Toggle menu"
       >
         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}

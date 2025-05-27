@@ -210,7 +210,7 @@ const page = () => {
             <select
               value={filters.type}
               onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-              className='bg-[#F5F4F1] p-2 rounded-lg'
+              className='bg-[#F5F4F1] p-2 mr-2 rounded-lg'
             >
               <option value="all">All Types</option>
               <option value="Regular">Regular</option>
