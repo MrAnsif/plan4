@@ -179,19 +179,19 @@ const page = () => {
   return (
     <div className='text-[#101E25] p-10 w-full gap-y-4'>
       <div className='flex items-center justify-between mb-7 px-5'>
-        <h1 className='text-3xl font-bold'>Customer Details</h1>
-        <div className="flex gap-10">
-          <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/edit`) }} ><UserPen width={20} height={24} /> Edit Details</button>
-          <button className='flex gap-1 font-semibold text-red-500 hover:underline' onClick={handleDelete}><UserMinus width={20} height={24} /> Delete Customer</button>
+        <h1 className='text-3xl font-bold hidden md:block'>Customer Details</h1>
+        <div className="flex gap-10 ">
+          <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/edit`) }} ><UserPen width={20} height={24} />Edit Details</button>
+          <button className='flex gap-1 font-semibold text-red-500 hover:underline' onClick={handleDelete}><UserMinus width={20} height={24} />Delete Customer</button>
         </div>
       </div>
 
-      <div className=' flex flex-col gap-4'>
+      <div className=' flex flex-col gap-4 break-words'>
         <div className='w-full  rounded-4xl bg-[#F5F4F1] p-4 text-lg '>
           <h1 className='text-2xl font-bold flex items-center gap-2 underline'>
             <User />
             Owner Details</h1>
-          <div className='my-2 pb-3 grid grid-cols-2'>
+          <div className='my-2 pb-3 grid md:grid-cols-2 gap-y-2'>
             <h1> <strong>Owner Name:</strong> {customerDetails.registeredOwner?.ownerName || 'Not provided'}</h1>
             <h1> <strong>Address:</strong> {customerDetails.registeredOwner?.ownerAddress || 'Not provided'}</h1>
             <h1> <strong>Phone:</strong> {customerDetails.registeredOwner?.ownerPhone || 'Not provided'}</h1>
@@ -203,14 +203,14 @@ const page = () => {
           <h1 className='text-2xl font-bold flex items-center gap-2 underline'>
             <Building />
             Company Details</h1>
-          <div className='my-2 pb-3 border-b border-b-gray-300'>
+          <div className='my-2 pb-3 border-b border-b-gray-300 gap-y-2'>
             <h1><strong>Company Name:</strong> {customerDetails.companyName || 'Not provided'}</h1>
             <h1><strong>Address:</strong> {customerDetails.companyAddress || 'Not provided'}</h1>
             <h1><strong>Phone:</strong> {customerDetails.companyPhone || 'Not provided'}</h1>
           </div>
 
           <h1 className='text-2xl font-bold underline'>GST Details</h1>
-          <div className='my-2 pb-3 border-b border-b-gray-300 grid grid-cols-2'>
+          <div className='my-2 pb-3 border-b border-b-gray-300 grid md:grid-cols-2 gap-y-2'>
             <span>
               <h1><strong>GST Number:</strong> {customerDetails.gstDetails?.gstNumber || 'Not provided'}</h1>
               <h1><strong>Type of Registration:</strong> {customerDetails.gstDetails?.typeOfRegistration || 'Not provided'}</h1>

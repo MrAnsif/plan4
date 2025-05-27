@@ -7,12 +7,23 @@ import React, { useEffect, useMemo, useState } from 'react'
 const page = () => {
   const [customersData, setCustomersData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)  
+  const [error, setError] = useState(null)
   const [filters, setFilters] = useState({
     search: '',
     type: 'all',
     sortBy: 'name',
   })
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   useEffect(() => {
     const fetchCustomersData = async () => {
@@ -30,11 +41,11 @@ const page = () => {
         }
 
         setCustomersData(data)
-        setError(null)  
+        setError(null)
       } catch (error) {
         console.error('Failed to load customers', error);
         setError(error.message || 'Failed to load customers')
-        setCustomersData([]) 
+        setCustomersData([])
       } finally {
         setLoading(false)
       }
@@ -102,10 +113,91 @@ const page = () => {
     )
   }
 
+
+  const renderMobileView = () => (
+    <>
+      <div className="text-sm font-semibold px-2 py-4 pb-2 grid grid-cols-[1fr_1fr_0.5fr] uppercase flex-shrink-0">
+        <div>Company Name</div>
+        <div>Owner Name</div>
+        <div>Action</div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="grid gap-2">
+          {!filteredCustomers || filteredCustomers.length === 0 ? (
+            <p className="text-sm text-gray-400 p-4">No customers found.</p>
+          ) : (
+            filteredCustomers.map(customer => (
+              <div
+                key={customer?._id || Math.random()}
+                className='bg-[#EEECE8] px-2 py-4 rounded-lg grid grid-cols-[1fr_1fr_0.5fr] items-center justify-between hover:bg-[#e8e4dd] transition'
+              >
+                <div className="font-semibold">{customer?.companyName || 'N/A'}</div>
+                <div>{customer?.registeredOwner?.ownerName || 'N/A'}</div>
+                <div>
+                  {customer?._id ? (
+                    <Link href={`/customers/${customer._id}`}>
+                      <button className="text-blue-400 hover:underline">View</button>
+                    </Link>
+                  ) : (
+                    <span className="text-gray-400">No ID</span>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </>
+  );
+
+  const renderDesktopView = () => (
+    <>
+      <div className="text-base font-semibold p-4 pb-2 grid grid-cols-6 uppercase flex-shrink-0">
+        <div>Company Name</div>
+        <div>Owner Name</div>
+        <div>Registration Type</div>
+        <div>Filing Start Date</div>
+        <div>Added at</div>
+        <div>Action</div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="grid gap-2">
+          {!filteredCustomers || filteredCustomers.length === 0 ? (
+            <p className="text-sm text-gray-400 p-4">No customers found.</p>
+          ) : (
+            filteredCustomers.map(customer => (
+              <div
+                key={customer?._id || Math.random()}
+                className='bg-[#EEECE8] pl-4 py-4 rounded-lg grid grid-cols-6 items-center hover:bg-[#e8e4dd] transition'
+              >
+                <div className="font-semibold">{customer?.companyName || 'N/A'}</div>
+                <div>{customer?.registeredOwner?.ownerName || 'N/A'}</div>
+                <div>{customer?.gstDetails?.typeOfRegistration || 'N/A'}</div>
+                <div>{formatDate(customer?.gstDetails?.filingStartDate)}</div>
+                <div>{formatDate(customer?.createdAt)}</div>
+                <div>
+                  {customer?._id ? (
+                    <Link href={`/customers/${customer._id}`}>
+                      <button className="text-blue-400 hover:underline">View</button>
+                    </Link>
+                  ) : (
+                    <span className="text-gray-400">No ID</span>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </>
+  );
+
   return (
-    <div className='text-[#101E25] h-screen w-full flex flex-col p-10 gap-y-4'>
+    <div className='text-[#101E25] h-screen w-full flex flex-col md:p-10 px-2 py-10 gap-y-4'>
       <div className='flex items-center justify-between flex-shrink-0'>
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4 items-end w-full px-2 flex-col md:flex-row">
           <input
             className='bg-[#F5F4F1] p-2 rounded-lg'
             type="text"
@@ -114,70 +206,33 @@ const page = () => {
             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
           />
 
-          <select
-            value={filters.type}
-            onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-            className='bg-[#F5F4F1] p-2 rounded-lg'
-          >
-            <option value="all">All Types</option>
-            <option value="Regular">Regular</option>
-            <option value="Composition">Composition</option>
-          </select>
+          <div className='gap-x-6'>
+            <select
+              value={filters.type}
+              onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+              className='bg-[#F5F4F1] p-2 rounded-lg'
+            >
+              <option value="all">All Types</option>
+              <option value="Regular">Regular</option>
+              <option value="Composition">Composition</option>
+            </select>
 
-          <select
-            value={filters.sortBy}
-            onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
-            className='bg-[#F5F4F1] p-2 rounded-lg'
-          >
-            <option value="name">Sort by Name</option>
-            <option value="createdAt">Sort by Created Date</option>
-          </select>
-        </div>
-      </div>
-
-      <div className='bg-[#F5F4F1] rounded-4xl flex-1 flex flex-col min-h-0'>
-        <div className="text-base font-semibold p-4 pb-2 grid grid-cols-6 uppercase flex-shrink-0">
-          <div>Company Name</div>
-          <div>Owner Name</div>
-          <div>Registration Type</div>
-          <div>Filing Start Date</div>
-          <div>Added at</div>
-          <div>Action</div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          <div className="grid gap-2">
-            {!filteredCustomers || filteredCustomers.length === 0 ? (
-              <p className="text-sm text-gray-400 p-4">No customers found.</p>
-            ) : (
-              filteredCustomers.map(customer => {
-                return (
-                  <div
-                    key={customer?._id || Math.random()} 
-                    className='bg-[#EEECE8] pl-4 py-4 rounded-lg grid grid-cols-6 items-center hover:bg-[#e8e4dd] transition'
-                  >
-                    <div className="font-semibold">{customer?.companyName || 'N/A'}</div>
-                    <div>{customer?.registeredOwner?.ownerName || 'N/A'}</div>
-                    <div>{customer?.gstDetails?.typeOfRegistration || 'N/A'}</div>
-                    <div>{formatDate(customer?.gstDetails?.filingStartDate)}</div>
-                    <div>{formatDate(customer?.createdAt)}</div>
-
-                    <div>
-                      {customer?._id ? (
-                        <Link href={`/customers/${customer._id}`}>
-                          <button className="text-blue-400 hover:underline">View</button>
-                        </Link>
-                      ) : (
-                        <span className="text-gray-400">No ID</span>
-                      )}
-                    </div>
-                  </div>
-                )
-              })
-            )}
+            <select
+              value={filters.sortBy}
+              onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
+              className='bg-[#F5F4F1] p-2 rounded-lg'
+            >
+              <option value="name">Sort by Name</option>
+              <option value="createdAt">Sort by Created Date</option>
+            </select>
           </div>
         </div>
       </div>
+
+      <div className='bg-[#F5F4F1] rounded-2xl md:rounded-4xl flex-1 flex flex-col min-h-0'>
+        {isMobile ? renderMobileView() : renderDesktopView()}
+      </div>
+
     </div>
   )
 }

@@ -27,10 +27,9 @@ const page = () => {
   const regularCount = stats.typeOfRegistrationBreakdown.find(item => item._id === 'Regular')?.count || 0;
   const compositionCount = stats.typeOfRegistrationBreakdown.find(item => item._id === 'Composition')?.count || 0;
 
-  console.log(stats)
 
   return (
-    <div className="grid grid-cols-[1fr_2fr] text-[#101E25] px-10 py-5 w-full h-screen overflow-y-hidden">
+    <div className="grid md:grid-cols-[1fr_2fr] text-[#101E25] md:px-10 py-5 w-full h-screen md:overflow-y-hidden overflow-y-auto">
 
       <div className="flex flex-col py-2">
         <div className="relative rounded-4xl bg-[#F5F4F1] overflow-hidden p-8 m-4" >
@@ -47,8 +46,8 @@ const page = () => {
       </div>
 
 
-      <div className="flex flex-col gap-x-3 px-6 py-2">
-        <div className="relative rounded-4xl bg-[#F5F4F1] overflow-hidden h-[45dvh] px-8 py-5 mt-4 flex flex-col">
+      <div className="flex flex-col gap-x-3 md:px-6 px-2 py-2">
+        <div className="relative rounded-4xl bg-[#F5F4F1] overflow-hidden h-[45dvh] md:px-8 px-4 py-5 mt-4 flex flex-col">
           <div className="text-2xl font-semibold flex-shrink-0">
             <div className='flex items-center gap-2 mb-2'>
               <BellRing className="w-5 h-5" />
@@ -76,7 +75,7 @@ const page = () => {
           </div>
         </div>
 
-        <div className="relative rounded-4xl bg-[#F5F4F1] overflow-hidden h-[45dvh]  px-8 py-5 mt-4 flex flex-col">
+        <div className="relative rounded-4xl bg-[#F5F4F1] overflow-hidden h-[45dvh]  md:px-8 px-4 py-5 mt-4 flex flex-col">
           <div className="text-2xl font-semibold flex-shrink-0">
             <div className='flex items-center gap-2 mb-2'>
               <File className="w-6 h-6" />
