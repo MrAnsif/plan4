@@ -8,6 +8,7 @@ import Loader from '@/src/components/StyledLoader'
 import { UserMinus } from 'lucide-react'
 import { UserPen } from 'lucide-react'
 import { RefreshCcw } from 'lucide-react'
+import { Book } from 'lucide-react'
 
 const page = () => {
   const params = useParams();
@@ -181,6 +182,7 @@ const page = () => {
       <div className='flex items-center justify-between mb-7 px-5'>
         <h1 className='text-3xl font-bold hidden md:block'>Customer Details</h1>
         <div className="flex gap-10 ">
+          <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/filing`) }} ><Book width={20} height={24} />Filing Details</button>
           <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/edit`) }} ><UserPen width={20} height={24} />Edit Details</button>
           <button className='flex gap-1 font-semibold text-red-500 hover:underline' onClick={handleDelete}><UserMinus width={20} height={24} />Delete Customer</button>
         </div>

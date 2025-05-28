@@ -25,13 +25,11 @@ const CustomerSchema = new mongoose.Schema({
         totalTax: { type: Number },
         otherExpense: { type: Number },
 
-        // Only for Regular
         cgst: { type: Number },
         sgst: { type: Number },
         igst: { type: Number },
         cess: { type: Number, default: 0 },
 
-        // Only for Composition
         compositionRate: { type: Number }
     },
 
