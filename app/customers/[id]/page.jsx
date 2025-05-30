@@ -217,10 +217,10 @@ const page = () => {
               <h1><strong>Date of Registration:</strong> {formatDate(customerDetails.gstDetails?.dateOfRegistration)}</h1>
               <h1><strong>Filing Start Date:</strong> {formatDate(customerDetails.gstDetails?.filingStartDate)}</h1>
               <h1><strong>Service or Sales:</strong> {customerDetails.gstDetails?.serviceOrSales || 'Not provided'}</h1>
-              <h1><strong>Payable Tax:</strong> {formatCurrency(customerDetails.gstDetails?.totalTax)}</h1>
-              <h1><strong>Other Expense:</strong> {formatCurrency(customerDetails.gstDetails?.otherExpense)}</h1>
+              {/* <h1><strong>Payable Tax:</strong> {formatCurrency(customerDetails.gstDetails?.totalTax)}</h1> */}
+              {/* <h1><strong>Other Expense:</strong> {formatCurrency(customerDetails.gstDetails?.otherExpense)}</h1> */}
             </span>
-            <span>
+            {/* <span>
               {
                 customerDetails.gstDetails?.typeOfRegistration === 'Regular' ? (
                   <>
@@ -236,7 +236,7 @@ const page = () => {
                   </>
                 )
               }
-            </span>
+            </span> */}
           </div>
 
           <h1 className='text-2xl font-bold underline'>Business Details</h1>

@@ -296,7 +296,7 @@ const page = () => {
                 <option value='Sales'>Sales</option>
               </select>
             </div>
-            <div>
+            {/* <div>
               <label className='block text-sm font-medium mb-1'>Payable Tax</label>
               <input
                 type='number'
@@ -315,11 +315,10 @@ const page = () => {
                 value={formData.gstDetails.otherExpense}
                 onChange={(e) => handleInputChange('gstDetails', 'otherExpense', e.target.value)}
               />
-            </div>
+            </div> */}
           </div>
 
-          {/* Regular Taxpayer Fields */}
-          {formData.gstDetails.typeOfRegistration === 'Regular' && (
+          {/* {formData.gstDetails.typeOfRegistration === 'Regular' && (
             <div className='mt-4'>
               <h3 className='text-lg font-semibold mb-3'>Tax Breakdown</h3>
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
@@ -367,7 +366,6 @@ const page = () => {
             </div>
           )}
 
-          {/* Composition Taxpayer Fields */}
           {formData.gstDetails.typeOfRegistration === 'Composition' && (
             <div className='mt-4'>
               <h3 className='text-lg font-semibold mb-3'>Composition Details</h3>
@@ -384,7 +382,7 @@ const page = () => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Business Details */}
