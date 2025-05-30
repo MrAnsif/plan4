@@ -116,10 +116,9 @@ const page = () => {
 
   const renderMobileView = () => (
     <>
-      <div className="text-sm font-semibold px-2 py-4 pb-2 grid grid-cols-[1fr_1fr_0.5fr] uppercase flex-shrink-0">
+      <div className="text-sm font-semibold px-2 py-4 pb-2 grid grid-cols-2 uppercase flex-shrink-0">
         <div>Company Name</div>
         <div>Owner Name</div>
-        <div>Action</div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
@@ -130,19 +129,13 @@ const page = () => {
             filteredCustomers.map(customer => (
               <div
                 key={customer?._id || Math.random()}
-                className='bg-[#EEECE8] px-2 py-4 rounded-lg grid grid-cols-[1fr_1fr_0.5fr] items-center justify-between hover:bg-[#e8e4dd] transition'
+                className=''
               >
-                <div className="font-semibold">{customer?.companyName || 'N/A'}</div>
-                <div>{customer?.registeredOwner?.ownerName || 'N/A'}</div>
-                <div>
-                  {customer?._id ? (
-                    <Link href={`/customers/${customer._id}`}>
-                      <button className="text-blue-400 hover:underline">View</button>
-                    </Link>
-                  ) : (
-                    <span className="text-gray-400">No ID</span>
-                  )}
-                </div>
+                <Link href={`/customers/${customer._id}`} className='bg-[#EEECE8] px-2 py-4 rounded-lg grid grid-cols-2 items-center justify-between hover:bg-[#e8e4dd] transition'>
+                  <div className="font-semibold">{customer?.companyName || 'N/A'}</div>
+                  <div>{customer?.registeredOwner?.ownerName || 'N/A'}</div>
+
+                </Link>
               </div>
             ))
           )}
@@ -153,13 +146,12 @@ const page = () => {
 
   const renderDesktopView = () => (
     <>
-      <div className="text-base font-semibold p-4 pb-2 grid grid-cols-6 uppercase flex-shrink-0">
+      <div className="text-base font-semibold p-4 pb-2 grid grid-cols-5 uppercase flex-shrink-0">
         <div>Company Name</div>
         <div>Owner Name</div>
         <div>Registration Type</div>
         <div>Filing Start Date</div>
         <div>Added at</div>
-        <div>Action</div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
@@ -170,22 +162,15 @@ const page = () => {
             filteredCustomers.map(customer => (
               <div
                 key={customer?._id || Math.random()}
-                className='bg-[#EEECE8] pl-4 py-4 rounded-lg grid grid-cols-6 items-center hover:bg-[#e8e4dd] transition'
+                className=''
               >
-                <div className="font-semibold">{customer?.companyName || 'N/A'}</div>
-                <div>{customer?.registeredOwner?.ownerName || 'N/A'}</div>
-                <div>{customer?.gstDetails?.typeOfRegistration || 'N/A'}</div>
-                <div>{formatDate(customer?.gstDetails?.filingStartDate)}</div>
-                <div>{formatDate(customer?.createdAt)}</div>
-                <div>
-                  {customer?._id ? (
-                    <Link href={`/customers/${customer._id}`}>
-                      <button className="text-blue-400 hover:underline">View</button>
-                    </Link>
-                  ) : (
-                    <span className="text-gray-400">No ID</span>
-                  )}
-                </div>
+                <Link href={`/customers/${customer._id}`} className='bg-[#EEECE8] pl-4 py-4 rounded-lg grid grid-cols-5 items-center hover:bg-[#e8e4dd] transition'>
+                  <div className="font-semibold">{customer?.companyName || 'N/A'}</div>
+                  <div>{customer?.registeredOwner?.ownerName || 'N/A'}</div>
+                  <div>{customer?.gstDetails?.typeOfRegistration || 'N/A'}</div>
+                  <div>{formatDate(customer?.gstDetails?.filingStartDate)}</div>
+                  <div>{formatDate(customer?.createdAt)}</div>
+                </Link>
               </div>
             ))
           )}
@@ -223,7 +208,7 @@ const page = () => {
               className='bg-[#F5F4F1] p-2 rounded-lg'
             >
               <option value="name">Sort by Name</option>
-              <option value="createdAt">Sort by Created Date</option>
+              <option value="createdAt">Sort by Added Date</option>
             </select>
           </div>
         </div>

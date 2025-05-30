@@ -94,8 +94,8 @@ const AppSidebar = () => {
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div>
-          <div className="text-white text-xl my-4 place-items-center px-4">
-            <Link href='/dashboard'>
+          <div className="text-white text-xl my-4 flex justify-center px-4">
+            <Link href='/dashboard' className="" >
               <h1 className="text-neutral-300 font-bold text-2xl uppercase">Plan 4</h1>
             </Link>
           </div>

@@ -7,7 +7,6 @@ import { useParams, useRouter } from 'next/navigation'
 import Loader from '@/src/components/StyledLoader'
 import { UserMinus } from 'lucide-react'
 import { UserPen } from 'lucide-react'
-import { RefreshCcw } from 'lucide-react'
 import { Book } from 'lucide-react'
 
 const page = () => {
@@ -124,7 +123,6 @@ const page = () => {
         }
 
         const result = await res.json()
-        alert('Customer deleted.')
         router.push('/customers')
 
       } catch (error) {
@@ -182,7 +180,7 @@ const page = () => {
       <div className='flex items-center justify-between mb-7 px-5'>
         <h1 className='text-3xl font-bold hidden md:block'>Customer Details</h1>
         <div className="flex gap-10 ">
-          <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/filing`) }} ><Book width={20} height={24} />Filing Details</button>
+          <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/filing`) }} ><Book width={20} height={24} />Filing</button>
           <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/edit`) }} ><UserPen width={20} height={24} />Edit Details</button>
           <button className='flex gap-1 font-semibold text-red-500 hover:underline' onClick={handleDelete}><UserMinus width={20} height={24} />Delete Customer</button>
         </div>
@@ -219,7 +217,7 @@ const page = () => {
               <h1><strong>Date of Registration:</strong> {formatDate(customerDetails.gstDetails?.dateOfRegistration)}</h1>
               <h1><strong>Filing Start Date:</strong> {formatDate(customerDetails.gstDetails?.filingStartDate)}</h1>
               <h1><strong>Service or Sales:</strong> {customerDetails.gstDetails?.serviceOrSales || 'Not provided'}</h1>
-              <h1><strong>Total Tax:</strong> {formatCurrency(customerDetails.gstDetails?.totalTax)}</h1>
+              <h1><strong>Payable Tax:</strong> {formatCurrency(customerDetails.gstDetails?.totalTax)}</h1>
               <h1><strong>Other Expense:</strong> {formatCurrency(customerDetails.gstDetails?.otherExpense)}</h1>
             </span>
             <span>
@@ -233,7 +231,7 @@ const page = () => {
                   </>
                 ) : (
                   <>
-                    <h1><strong>Composition Rate:</strong> {customerDetails.gstDetails?.compositionRate || 0}%</h1>
+                    <h1><strong>Composition :</strong> {customerDetails.gstDetails?.compositionRate || 0}</h1>
                     <h1><strong>Cess:</strong> {formatCurrency(customerDetails.gstDetails?.cess)}</h1>
                   </>
                 )

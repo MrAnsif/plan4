@@ -297,7 +297,7 @@ const page = () => {
               </select>
             </div>
             <div>
-              <label className='block text-sm font-medium mb-1'>Total Tax</label>
+              <label className='block text-sm font-medium mb-1'>Payable Tax</label>
               <input
                 type='number'
                 step='0.01'
@@ -373,7 +373,7 @@ const page = () => {
               <h3 className='text-lg font-semibold mb-3'>Composition Details</h3>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <div>
-                  <label className='block text-sm font-medium mb-1'>Composition Rate (%)</label>
+                  <label className='block text-sm font-medium mb-1'>Composition</label>
                   <input
                     type='number'
                     step='0.01'

@@ -506,10 +506,9 @@ const page = () => {
               <h3 className='text-lg font-semibold mb-3'>Composition Details</h3>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <div>
-                  <label className='block text-sm font-medium mb-1'>Composition Rate (%)</label>
+                  <label className='block text-sm font-medium mb-1'>Composition Amount</label>
                   <input
                     type='number'
-                    step='0.01'
                     className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                     value={formData.gstDetails.compositionRate}
                     onChange={(e) => handleInputChange('gstDetails', 'compositionRate', e.target.value)}

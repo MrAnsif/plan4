@@ -19,3 +19,17 @@ export async function GET(request, { params }) {
         return NextResponse.json({ error: "Failed to get filing data" }, { status: 500 });
     }
 }
+
+export async function DELETE(request, { params }) {
+    try {
+        await connectMongo()
+        const { id: filingId } = await params
+
+        await Filing.findByIdAndDelete(filingId)
+        return new Response(JSON.stringify({ success: true }), { status: 200 });
+
+    } catch (error) {
+        console.error('Failed to delete record:', error);
+        return NextResponse.json({ error: "Failed to delete record" }, { status: 500 });
+    }
+}
