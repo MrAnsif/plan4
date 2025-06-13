@@ -1,27 +1,27 @@
 import mongoose from 'mongoose';
 
 const CustomerSchema = new mongoose.Schema({
-    companyName: { type: String, required: true },
-    companyAddress: { type: String, required: true },
-    companyPhone: { type: String, required: true },
+    companyName: { type: String },
+    companyAddress: { type: String },
+    companyPhone: { type: String },
 
     registeredOwner: {
-        ownerName: { type: String, required: true },
-        ownerAddress: { type: String, required: true },
-        ownerPhone: { type: String, required: true },
-        ownerEmail: { type: String, required: true }
+        ownerName: { type: String },
+        ownerAddress: { type: String },
+        ownerPhone: { type: String },
+        ownerEmail: { type: String }
     },
 
     gstDetails: {
-        gstNumber: { type: String, required: true },
+        gstNumber: { type: String },
         typeOfRegistration: {
             type: String,
             enum: ["Regular", "Composition"],
-            required: true
+
         },
-        dateOfRegistration: { type: Date, required: true },
-        filingStartDate: { type: Date, required: true },
-        serviceOrSales: { type: String, required: true },
+        dateOfRegistration: { type: Date },
+        filingStartDate: { type: Date },
+        serviceOrSales: { type: String },
         totalTax: { type: Number },
         otherExpense: { type: Number },
 
@@ -34,7 +34,7 @@ const CustomerSchema = new mongoose.Schema({
     },
 
     businessDetails: {
-        buildingStatus: { type: String, required: true },
+        buildingStatus: { type: String },
         rentAmount: { type: Number },
         additionalBranches: [{ type: String }]
     }

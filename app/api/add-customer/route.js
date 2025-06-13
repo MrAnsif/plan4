@@ -5,13 +5,13 @@ export async function POST(req) {
   try {
     await connectMongo();
     const body = await req.json();
-    
+
     // Build gstDetails object conditionally
     const gstDetails = {
       gstNumber: body.gstDetails?.gstNumber,
       typeOfRegistration: body.gstDetails?.typeOfRegistration,
-      dateOfRegistration: new Date(body.gstDetails?.dateOfRegistration),
-      filingStartDate: new Date(body.gstDetails?.filingStartDate),
+      dateOfRegistration: body.gstDetails?.dateOfRegistration ? new Date(body.gstDetails.dateOfRegistration) : undefined,
+      filingStartDate: body.gstDetails?.filingStartDate ? new Date(body.gstDetails.filingStartDate) : undefined,
       serviceOrSales: body.gstDetails?.serviceOrSales,
     };
 
@@ -37,23 +37,23 @@ export async function POST(req) {
     }
 
     const newCustomer = await Customer.create({
-      companyName: body.companyName,
-      companyAddress: body.companyAddress,
-      companyPhone: body.companyPhone,
+      companyName: body?.companyName,
+      companyAddress: body?.companyAddress,
+      companyPhone: body?.companyPhone,
       registeredOwner: {
-        ownerName: body.registeredOwner?.ownerName,
-        ownerAddress: body.registeredOwner?.ownerAddress,
-        ownerPhone: body.registeredOwner?.ownerPhone,
-        ownerEmail: body.registeredOwner?.ownerEmail,
+        ownerName: body?.registeredOwner?.ownerName,
+        ownerAddress: body?.registeredOwner?.ownerAddress,
+        ownerPhone: body?.registeredOwner?.ownerPhone,
+        ownerEmail: body?.registeredOwner?.ownerEmail,
       },
       gstDetails,
       businessDetails: {
-        buildingStatus: body.businessDetails?.buildingStatus,
-        rentAmount: body.businessDetails?.rentAmount,
-        additionalBranches: body.businessDetails?.additionalBranches || [],
+        buildingStatus: body?.businessDetails?.buildingStatus,
+        rentAmount: body?.businessDetails?.rentAmount,
+        additionalBranches: body?.businessDetails?.additionalBranches || [],
       }
     });
-    
+
     return Response.json({ success: true, customer: newCustomer });
   } catch (error) {
     console.error(error);

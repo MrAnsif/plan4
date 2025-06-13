@@ -156,29 +156,28 @@ const page = () => {
           </h2>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
-              <label className='block text-sm font-medium mb-1'>Company Name *</label>
+              <label className='block text-sm font-medium mb-1'>Company Name </label>
               <input
                 type='text'
-                required
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.companyName}
                 onChange={(e) => handleInputChange(null, 'companyName', e.target.value)}
               />
             </div>
             <div>
-              <label className='block text-sm font-medium mb-1'>Company Phone *</label>
+              <label className='block text-sm font-medium mb-1'>Company Phone</label>
               <input
                 type='tel'
-                required
+                
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.companyPhone}
                 onChange={(e) => handleInputChange(null, 'companyPhone', e.target.value)}
               />
             </div>
             <div className='md:col-span-2'>
-              <label className='block text-sm font-medium mb-1'>Company Address *</label>
+              <label className='block text-sm font-medium mb-1'>Company Address </label>
               <textarea
-                required
+                // 
                 rows='3'
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.companyAddress}
@@ -196,39 +195,39 @@ const page = () => {
           </h2>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
-              <label className='block text-sm font-medium mb-1'>Owner Name *</label>
+              <label className='block text-sm font-medium mb-1'>Owner Name</label>
               <input
                 type='text'
-                required
+                
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.registeredOwner.ownerName}
                 onChange={(e) => handleInputChange('registeredOwner', 'ownerName', e.target.value)}
               />
             </div>
             <div>
-              <label className='block text-sm font-medium mb-1'>Owner Phone *</label>
+              <label className='block text-sm font-medium mb-1'>Owner Phone</label>
               <input
                 type='tel'
-                required
+                
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.registeredOwner.ownerPhone}
                 onChange={(e) => handleInputChange('registeredOwner', 'ownerPhone', e.target.value)}
               />
             </div>
             <div>
-              <label className='block text-sm font-medium mb-1'>Owner Email *</label>
+              <label className='block text-sm font-medium mb-1'>Owner Email</label>
               <input
                 type='email'
-                required
+                
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.registeredOwner.ownerEmail}
                 onChange={(e) => handleInputChange('registeredOwner', 'ownerEmail', e.target.value)}
               />
             </div>
             <div>
-              <label className='block text-sm font-medium mb-1'>Owner Address *</label>
+              <label className='block text-sm font-medium mb-1'>Owner Address</label>
               <textarea
-                required
+                
                 rows='3'
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.registeredOwner.ownerAddress}
@@ -243,19 +242,19 @@ const page = () => {
           <h2 className='text-2xl font-bold underline mb-4'>GST Details</h2>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
-              <label className='block text-sm font-medium mb-1'>GST Number *</label>
+              <label className='block text-sm font-medium mb-1'>GST Number </label>
               <input
                 type='text'
-                required
+                // 
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.gstDetails.gstNumber}
                 onChange={(e) => handleInputChange('gstDetails', 'gstNumber', e.target.value)}
               />
             </div>
             <div>
-              <label className='block text-sm font-medium mb-1'>Type of Registration *</label>
+              <label className='block text-sm font-medium mb-1'>Type of Registration</label>
               <select
-                required
+                
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.gstDetails.typeOfRegistration}
                 onChange={(e) => handleInputChange('gstDetails', 'typeOfRegistration', e.target.value)}
@@ -265,29 +264,29 @@ const page = () => {
               </select>
             </div>
             <div>
-              <label className='block text-sm font-medium mb-1'>Date of Registration *</label>
+              <label className='block text-sm font-medium mb-1'>Date of Registration</label>
               <input
                 type='date'
-                required
+                
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.gstDetails.dateOfRegistration}
                 onChange={(e) => handleInputChange('gstDetails', 'dateOfRegistration', e.target.value)}
               />
             </div>
             <div>
-              <label className='block text-sm font-medium mb-1'>Filing Start Date *</label>
+              <label className='block text-sm font-medium mb-1'>Filing Start Date</label>
               <input
                 type='date'
-                required
+                
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.gstDetails.filingStartDate}
                 onChange={(e) => handleInputChange('gstDetails', 'filingStartDate', e.target.value)}
               />
             </div>
             <div>
-              <label className='block text-sm font-medium mb-1'>Service or Sales *</label>
+              <label className='block text-sm font-medium mb-1'>Service or Sales</label>
               <select
-                required
+                
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.gstDetails.serviceOrSales}
                 onChange={(e) => handleInputChange('gstDetails', 'serviceOrSales', e.target.value)}
@@ -390,9 +389,9 @@ const page = () => {
           <h2 className='text-2xl font-bold underline mb-4'>Business Details</h2>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
-              <label className='block text-sm font-medium mb-1'>Building Status *</label>
+              <label className='block text-sm font-medium mb-1'>Building Status</label>
               <select
-                required
+                
                 className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                 value={formData.businessDetails.buildingStatus}
                 onChange={(e) => handleInputChange('businessDetails', 'buildingStatus', e.target.value)}
@@ -455,14 +454,14 @@ const page = () => {
           <button
             type='button'
             onClick={() => router.back()}
-            className='px-6 py-3 bg-[#0F1322] text-white rounded-lg hover:bg-gray-800 transition-colors'
+            className='px-6 py-3 bg-[#0F1322] text-white rounded-full hover:bg-gray-800 transition-colors'
           >
             Cancel
           </button>
           <button
             type='submit'
             disabled={loading}
-            className='px-6 py-3 bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white font-semibold hover:from-[#F25CA0] hover:to-[#F1765B] rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+            className='px-6 py-3 bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white font-semibold hover:from-[#883359] hover:to-[#884232] rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
           >
             {loading ? 'Adding Customer...' : 'Add Customer'}
           </button>

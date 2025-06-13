@@ -19,9 +19,9 @@ export async function POST(req) {
         const typeOfRegistration = customer.gstDetails.typeOfRegistration
 
         const newFiling = await Filing.create({
-            customerId: body.customerId,
-            filingDate: body.filingDate,
-            income: body.income,
+            customerId: body?.customerId,
+            filingDate: body?.filingDate,
+            income: body?.income,
             totalTaxPayable: {
                 totalTax: body.totalTaxPayable?.totalTax,
                 cgst: body.totalTaxPayable?.cgst,

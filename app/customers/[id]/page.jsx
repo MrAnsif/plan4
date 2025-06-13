@@ -180,9 +180,9 @@ const page = () => {
       <div className='flex items-center justify-between mb-7 px-5'>
         <h1 className='text-3xl font-bold hidden md:block'>Customer Details</h1>
         <div className="flex gap-10 ">
-          <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/filing`) }} ><Book width={20} height={24} />Filing</button>
-          <button className='flex gap-1 font-semibold text-[#0F1322] hover:underline' onClick={() => { router.push(`/customers/${id}/edit`) }} ><UserPen width={20} height={24} />Edit Details</button>
-          <button className='flex gap-1 font-semibold text-red-500 hover:underline' onClick={handleDelete}><UserMinus width={20} height={24} />Delete Customer</button>
+          <button className='flex gap-1 font-semibold text-[#0F1322] px-4 py-2 rounded-full bg-gradient-to-tr from-[#F1765B]/20 to-[#F25CA0]/20 hover:underline' onClick={() => { router.push(`/customers/${id}/filing`) }} ><Book width={20} height={24} />Filing</button>
+          <button className='flex gap-1 font-semibold text-[#0F1322] px-4 py-2 rounded-full bg-gradient-to-tr from-[#F1765B]/20 to-[#F25CA0]/20  hover:underline' onClick={() => { router.push(`/customers/${id}/edit`) }} ><UserPen width={20} height={24} />Edit Details</button>
+          <button className='flex gap-1 font-semibold text-red-500 px-4 py-2 rounded-full bg-gradient-to-tr from-[#F1765B]/20 to-[#F25CA0]/20  hover:underline' onClick={handleDelete}><UserMinus width={20} height={24} />Delete Customer</button>
         </div>
       </div>
 

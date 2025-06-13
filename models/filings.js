@@ -3,16 +3,13 @@ import mongoose from "mongoose";
 const FilingSchema = new mongoose.Schema({
     customerId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Customer',
-        required: true
+        ref: 'Customer'
     },
     filingDate: {
-        type: Date,
-        required: true
+        type: Date
     },
     income: {
-        type: Number,
-        required: true
+        type: Number
     },
     totalTaxPayable: {
         totalTax: { type: Number, default: 0 },
@@ -24,8 +21,7 @@ const FilingSchema = new mongoose.Schema({
     },
     typeOfRegistration: {
         type: String,
-        enum: ['Regular', 'Composition'],
-        required: true
+        enum: ['Regular', 'Composition']
     }
 }, { timestamps: true });
 

@@ -12,6 +12,7 @@ const page = () => {
 
   const [filingsData, setFilingsData] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState(null)
   const [filters, setFilters] = useState({
     search: '',
@@ -212,6 +213,7 @@ const page = () => {
 
   const handleAddFiling = async (e) => {
     e.preventDefault()
+    setIsAdding(true)
 
     try {
 
@@ -251,6 +253,7 @@ const page = () => {
         console.error('Failed to add new filing data', result.error)
         alert(`Failed to add filing: ${result.error || 'Unknown error'}`)
       }
+      setIsAdding(false)
 
     } catch (error) {
       console.error('Error:', error)
@@ -265,9 +268,9 @@ const page = () => {
           <h2 className="text-xl font-bold mb-4">Add New Filing</h2>
 
           <div className="mb-4">
-            <label className='block text-sm font-medium mb-1'>Type of Registration *</label>
+            <label className='block text-sm font-medium mb-1'>Type of Registration</label>
             <select
-              required
+
               className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={addFilingData.typeOfRegistration}
               onChange={(e) => handleInputChange(null, 'typeOfRegistration', e.target.value)}
@@ -278,10 +281,10 @@ const page = () => {
           </div>
 
           <div className="mb-4">
-            <label className='block text-sm font-medium mb-1'>Filing Date *</label>
+            <label className='block text-sm font-medium mb-1'>Filing Date</label>
             <input
               type='date'
-              required
+
               className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={addFilingData.filingDate}
               onChange={(e) => handleInputChange(null, 'filingDate', e.target.value)}
@@ -289,10 +292,10 @@ const page = () => {
           </div>
 
           <div className="mb-4">
-            <label className='block text-sm font-medium mb-1'>Income *</label>
+            <label className='block text-sm font-medium mb-1'>Income</label>
             <input
               type='number'
-              required
+
               min="0"
               step="0.01"
               className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
@@ -302,10 +305,10 @@ const page = () => {
           </div>
 
           <div className="mb-4">
-            <label className='block text-sm font-medium mb-1'>Total Tax Payable *</label>
+            <label className='block text-sm font-medium mb-1'>Total Tax Payable</label>
             <input
               type='number'
-              required
+
               min="0"
               step="0.01"
               className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
@@ -378,9 +381,10 @@ const page = () => {
             </button>
             <button
               type='submit'
+              disabled={isAdding}
               className='px-6 py-2 bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white font-semibold hover:from-[#F25CA0] hover:to-[#F1765B] rounded-4xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
             >
-              Add Filing
+              {isAdding ? 'Adding' : 'Add Filing'}
             </button>
           </div>
         </form>
@@ -536,7 +540,7 @@ const page = () => {
       {filteredFilings && filteredFilings.length > 0 && (
         <div className='bg-[#F5F4F1] rounded-2xl md:rounded-4xl p-4 flex-shrink-0'>
           <div className='text-sm font-semibold mb-2'>Summary</div>
-          <div className='grid grid-cols-2 md:grid-cols-3 gap-4 text-sm'>
+          <div className='grid grid-cols-2 md:grid-cols-5 gap-4 text-sm'>
             <div>
               <span className='text-gray-600'>Total Filings: </span>
               <span className='font-semibold'>{filteredFilings.length}</span>
@@ -551,6 +555,18 @@ const page = () => {
               <span className='text-gray-600'>Total Tax: </span>
               <span className='font-semibold text-red-600'>
                 {formatCurrency(filteredFilings.reduce((sum, f) => sum + (f.totalTaxPayable?.totalTax || 0), 0))}
+              </span>
+            </div>
+            <div>
+              <span className='text-gray-600'>Total IGST: </span>
+              <span className='font-semibold'>
+                {formatCurrency(filteredFilings.reduce((sum, f) => sum + (parseFloat(f.totalTaxPayable?.igst) || 0), 0))}
+              </span>
+            </div>
+            <div>
+              <span className='text-gray-600'>Total CESS: </span>
+              <span className='font-semibold'>
+                {formatCurrency(filteredFilings.reduce((sum, f) => sum + (parseFloat(f.totalTaxPayable?.cess) || 0), 0))}
               </span>
             </div>
           </div>
