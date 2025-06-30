@@ -1,7 +1,7 @@
 'use client'
 
 import Loader from '@/src/components/StyledLoader'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Edit } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -13,6 +13,7 @@ const page = () => {
   const [filingsData, setFilingsData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [isAdding, setIsAdding] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
   const [error, setError] = useState(null)
   const [filters, setFilters] = useState({
     search: '',
@@ -21,6 +22,9 @@ const page = () => {
   })
   const [isMobile, setIsMobile] = useState(false);
   const [isAddFiling, setIsAddFiling] = useState(false)
+  const [isViewEditFiling, setIsViewEditFiling] = useState(false)
+  const [selectedFiling, setSelectedFiling] = useState(null)
+  const [editFilingData, setEditFilingData] = useState({})
   const [addFilingData, setAddFilingData] = useState({
     customerId: customerId,
     filingDate: '',
@@ -33,7 +37,10 @@ const page = () => {
       cess: '',
       compositionTax: '',
     },
-    typeOfRegistration: 'Regular'
+    typeOfRegistration: 'Regular',
+    gstr1: '',
+    gstr3b: '',
+    gstr9: ''
   })
 
   useEffect(() => {
@@ -190,6 +197,49 @@ const page = () => {
     }
   }
 
+  const handleEditInputChange = (section, field, value) => {
+    if (section) {
+      setEditFilingData(prev => ({
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [field]: value
+        }
+      }))
+    } else {
+      setEditFilingData(prev => ({
+        ...prev,
+        [field]: value
+      }))
+    }
+
+    if (section === 'totalTaxPayable' && field === 'totalTax' && editFilingData.typeOfRegistration === 'Regular') {
+      const totalTax = parseFloat(value) || 0
+      setEditFilingData(prev => ({
+        ...prev,
+        totalTaxPayable: {
+          ...prev.totalTaxPayable,
+          cgst: (totalTax / 2).toFixed(2),
+          sgst: (totalTax / 2).toFixed(2),
+          igst: '0',
+          cess: '0'
+        }
+      }))
+    }
+  }
+
+  const handleFilingClick = (filing) => {
+    setSelectedFiling(filing)
+    setEditFilingData({
+      ...filing,
+      filingDate: filing.filingDate ? filing.filingDate.split('T')[0] : '',
+      gstr1: filing.gstr1 || '',
+      gstr3b: filing.gstr3b || '',
+      gstr9: filing.gstr9 || ''
+    })
+    setIsViewEditFiling(true)
+  }
+
   if (loading) {
     return <div className="place-content-center"><Loader /></div>
   }
@@ -247,7 +297,10 @@ const page = () => {
             cess: '',
             compositionTax: '',
           },
-          typeOfRegistration: 'Regular'
+          typeOfRegistration: 'Regular',
+          gstr1: '',
+          gstr3b: '',
+          gstr9: ''
         })
       } else {
         console.error('Failed to add new filing data', result.error)
@@ -261,16 +314,51 @@ const page = () => {
     }
   }
 
+  const handleUpdateFiling = async (e) => {
+    e.preventDefault()
+    setIsEditing(true)
+
+    try {
+      const response = await fetch(`/api/filing/${selectedFiling._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editFilingData)
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+
+        const res = await fetch(`/api/filing/${customerId}`)
+        const data = await res.json()
+        setFilingsData(data.filings)
+        setIsViewEditFiling(false)
+        setSelectedFiling(null)
+        alert('Filing updated successfully')
+
+      } else {
+        console.error('Failed to update filing data', result.error)
+        alert(`Failed to update filing: ${result.error || 'Unknown error'}`)
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      alert('An error occurred while updating the filing')
+    } finally {
+      setIsEditing(false)
+    }
+  }
+
   if (isAddFiling) {
     return (
       <div className="h-screen w-screen fixed top-0 left-0 flex items-center justify-center bg-[#000]/50 backdrop-blur-lg z-50">
-        <form onSubmit={handleAddFiling} className="bg-white px-6 py-3 rounded-lg shadow-lg max-w-lg w-full max-h-11/12 overflow-y-auto">
+        <form onSubmit={handleAddFiling} className="bg-white px-6 py-3 rounded-lg shadow-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
           <h2 className="text-xl font-bold mb-4">Add New Filing</h2>
 
           <div className="mb-4">
             <label className='block text-sm font-medium mb-1'>Type of Registration</label>
             <select
-
               className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={addFilingData.typeOfRegistration}
               onChange={(e) => handleInputChange(null, 'typeOfRegistration', e.target.value)}
@@ -284,7 +372,6 @@ const page = () => {
             <label className='block text-sm font-medium mb-1'>Filing Date</label>
             <input
               type='date'
-
               className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={addFilingData.filingDate}
               onChange={(e) => handleInputChange(null, 'filingDate', e.target.value)}
@@ -295,7 +382,6 @@ const page = () => {
             <label className='block text-sm font-medium mb-1'>Income</label>
             <input
               type='number'
-
               min="0"
               step="0.01"
               className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
@@ -308,7 +394,6 @@ const page = () => {
             <label className='block text-sm font-medium mb-1'>Total Tax Payable</label>
             <input
               type='number'
-
               min="0"
               step="0.01"
               className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
@@ -370,6 +455,37 @@ const page = () => {
             </>
           )}
 
+          <div className="mb-4">
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+              <div>
+                <label className='block text-sm font-medium mb-1'>GSTR 1</label>
+                <input
+                  type='text'
+                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  value={addFilingData.gstr1}
+                  onChange={(e) => handleInputChange(null, 'gstr1', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className='block text-sm font-medium mb-1'>GSTR 3B </label>
+                <input
+                  type='text'
+                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  value={addFilingData.gstr3b}
+                  onChange={(e) => handleInputChange(null, 'gstr3b', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className='block text-sm font-medium mb-1'>GSTR 9 </label>
+                <input
+                  type='text'
+                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  value={addFilingData.gstr9}
+                  onChange={(e) => handleInputChange(null, 'gstr9', e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
 
           <div className="flex justify-end gap-4 mt-6 ">
             <button
@@ -385,6 +501,167 @@ const page = () => {
               className='px-6 py-2 bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white font-semibold hover:from-[#F25CA0] hover:to-[#F1765B] rounded-4xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
             >
               {isAdding ? 'Adding' : 'Add Filing'}
+            </button>
+          </div>
+        </form>
+      </div>
+    )
+  }
+
+  if (isViewEditFiling && selectedFiling) {
+    return (
+      <div className="h-screen w-screen fixed top-0 left-0 flex items-center justify-center bg-[#000]/50 backdrop-blur-lg z-50">
+        <form onSubmit={handleUpdateFiling} className="bg-white px-6 py-3 rounded-lg shadow-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+          <h2 className="text-xl font-bold mb-4">Edit Filing Details</h2>
+
+          <div className="mb-4">
+            <label className='block text-sm font-medium mb-1'>Type of Registration</label>
+            <select
+              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              value={editFilingData.typeOfRegistration}
+              onChange={(e) => handleEditInputChange(null, 'typeOfRegistration', e.target.value)}
+            >
+              <option value="Regular">Regular</option>
+              <option value="Composition">Composition</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className='block text-sm font-medium mb-1'>Filing Date</label>
+            <input
+              type='date'
+              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              value={editFilingData.filingDate}
+              onChange={(e) => handleEditInputChange(null, 'filingDate', e.target.value)}
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className='block text-sm font-medium mb-1'>Income</label>
+            <input
+              type='number'
+              min="0"
+              step="0.01"
+              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              value={editFilingData.income}
+              onChange={(e) => handleEditInputChange(null, 'income', e.target.value)}
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className='block text-sm font-medium mb-1'>Total Tax Payable</label>
+            <input
+              type='number'
+              min="0"
+              step="0.01"
+              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              value={editFilingData.totalTaxPayable?.totalTax || ''}
+              onChange={(e) => handleEditInputChange('totalTaxPayable', 'totalTax', e.target.value)}
+            />
+          </div>
+
+          {editFilingData.typeOfRegistration === 'Regular' && (
+            <>
+              <div className='mb-4'>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  <div>
+                    <label className='block text-sm font-medium mb-1'>CGST</label>
+                    <input
+                      type='number'
+                      min="0"
+                      step='0.01'
+                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      value={editFilingData.totalTaxPayable?.cgst || ''}
+                      onChange={(e) => handleEditInputChange('totalTaxPayable', 'cgst', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className='block text-sm font-medium mb-1'>SGST</label>
+                    <input
+                      type='number'
+                      min="0"
+                      step='0.01'
+                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      value={editFilingData.totalTaxPayable?.sgst || ''}
+                      onChange={(e) => handleEditInputChange('totalTaxPayable', 'sgst', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className='block text-sm font-medium mb-1'>IGST</label>
+                    <input
+                      type='number'
+                      min="0"
+                      step='0.01'
+                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      value={editFilingData.totalTaxPayable?.igst || ''}
+                      onChange={(e) => handleEditInputChange('totalTaxPayable', 'igst', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className='block text-sm font-medium mb-1'>Cess</label>
+                    <input
+                      type='number'
+                      min="0"
+                      step='0.01'
+                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      value={editFilingData.totalTaxPayable?.cess || ''}
+                      onChange={(e) => handleEditInputChange('totalTaxPayable', 'cess', e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          <div className="mb-4">
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+              <div>
+                <label className='block text-sm font-medium mb-1'>GSTR 1 </label>
+                <input
+                  type='text'
+                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  value={editFilingData.gstr1 || ''}
+                  onChange={(e) => handleEditInputChange(null, 'gstr1', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className='block text-sm font-medium mb-1'>GSTR 3B </label>
+                <input
+                  type='text'
+                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  value={editFilingData.gstr3b || ''}
+                  onChange={(e) => handleEditInputChange(null, 'gstr3b', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className='block text-sm font-medium mb-1'>GSTR 9 </label>
+                <input
+                  type='text'
+                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  value={editFilingData.gstr9 || ''}
+                  onChange={(e) => handleEditInputChange(null, 'gstr9', e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-4 mt-6 ">
+            <button
+              type="button"
+              onClick={() => {
+                setIsViewEditFiling(false)
+                setSelectedFiling(null)
+              }}
+              className='px-4 py-2 bg-gray-300 text-gray-800 rounded-4xl hover:bg-gray-400'
+            >
+              Cancel
+            </button>
+            <button
+              type='submit'
+              disabled={isEditing}
+              className='px-6 py-2 bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white font-semibold hover:from-[#F25CA0] hover:to-[#F1765B] rounded-4xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+            >
+              {isEditing ? 'Updating' : 'Update Filing'}
             </button>
           </div>
         </form>
@@ -434,12 +711,21 @@ const page = () => {
             filteredFilings.map(filing => (
               <div
                 key={filing?._id || Math.random()}
-                className='bg-[#EEECE8] px-2 py-4 rounded-lg grid grid-cols-[1fr_1fr_0.5fr_0.2fr] items-center justify-between hover:bg-[#e8e4dd] transition'
+                className='bg-[#EEECE8] px-2 py-4 rounded-lg grid grid-cols-[1fr_1fr_0.5fr_0.2fr] items-center justify-between hover:bg-[#e8e4dd] transition cursor-pointer'
+                onClick={() => handleFilingClick(filing)}
               >
                 <div className="font-semibold">{formatDate(filing?.filingDate)}</div>
                 <div>{formatCurrency(filing?.income)}</div>
                 <div>{formatCurrency(filing?.totalTaxPayable?.totalTax)}</div>
-                <button onClick={() => { handleDelete(filing._id) }} className='text-red-400'><Trash2 /> </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(filing._id)
+                  }}
+                  className='text-red-400'
+                >
+                  <Trash2 />
+                </button>
               </div>
             ))
           )}
@@ -468,7 +754,8 @@ const page = () => {
             filteredFilings.map(filing => (
               <div
                 key={filing?._id || Math.random()}
-                className='bg-[#EEECE8] pl-4 py-4 rounded-lg grid grid-cols-8 items-center hover:bg-[#e8e4dd] transition'
+                className='bg-[#EEECE8] pl-4 py-4 rounded-lg grid grid-cols-8 items-center hover:bg-[#e8e4dd] transition cursor-pointer'
+                onClick={() => handleFilingClick(filing)}
               >
                 <div className="font-semibold">{formatDate(filing?.filingDate)}</div>
                 <div className="font-medium text-green-700">{formatCurrency(filing?.income)}</div>
@@ -477,7 +764,15 @@ const page = () => {
                 <div>{formatCurrency(filing?.totalTaxPayable?.sgst)}</div>
                 <div>{formatCurrency(filing?.totalTaxPayable?.igst)}</div>
                 <div>{formatCurrency(filing?.totalTaxPayable?.cess)}</div>
-                <button onClick={() => { handleDelete(filing._id) }} className='text-red-400'><Trash2 /></button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(filing._id)
+                  }}
+                  className='text-red-400 cursor-pointer bg-white border border-neutral-300 w-fit p-2 rounded-2xl'
+                >
+                  <Trash2 />
+                </button>
               </div>
             ))
           )}
@@ -487,91 +782,97 @@ const page = () => {
   );
 
   return (
-    <div className='text-[#101E25] h-screen w-full flex flex-col md:p-10 px-2 py-10 gap-y-4'>
-      <div className='flex items-center justify-between flex-shrink-0'>
-        <div className="flex justify-between w-full px-2 ">
-          <div className='flex gap-4 items-end flex-col md:flex-row'>
-            <input
-              className='bg-[#F5F4F1] p-2 rounded-lg'
-              type="text"
-              placeholder='Search by income, tax...'
-              value={filters.search}
-              onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-            />
-
-            <div className=''>
-              <select
-                value={filters.financialYear}
-                onChange={(e) => setFilters({ ...filters, financialYear: e.target.value })}
-                className='bg-[#F5F4F1] p-2 mr-2 rounded-lg'
-              >
-                <option value="all">All Financial Years</option>
-                {getFinancialYears().map(fy => (
-                  <option key={fy.value} value={fy.value}>{fy.label}</option>
-                ))}
-              </select>
-
-              <select
-                value={filters.sortBy}
-                onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
-                className='bg-[#F5F4F1] p-2 rounded-lg'
-              >
-                <option value="filingDate">Sort by Filing Date</option>
-                <option value="income">Sort by Income</option>
-                <option value="totalTax">Sort by Total Tax</option>
-                <option value="createdAt">Sort by Created Date</option>
-              </select>
-            </div>
-            <button
-              className='px-4 py-2 bg-gradient-to-tr from-[#f25ca0] to-[#f1765b] text-white rounded-4xl hover:bg-gradient-to-bl hover:from-[#c1497f] hover:to-[#b35743]'
-              onClick={() => setIsAddFiling(true)}
+    <div className='text-[#101E25] h-screen w-full flex flex-col p-10 gap-y-4'>
+      {/* Header */}
+      <div className='flex flex-col gap-4'>
+        <div className='flex items-center justify-between'>
+          {/* Back Link */}
+          <div className='flex justify-start'>
+            <Link
+              href='/customers'
+              className='bg-clip-text text-transparent bg-gradient-to-tr from-[#ce2e0a] to-[#d60764] hover:from-[#803726] hover:to-[#7c2f52] font-medium flex items-center gap-2'
             >
-              Add filing
-            </button>
+              ← Back to Customers
+            </Link>
+          </div>
+          <button
+            onClick={() => setIsAddFiling(true)}
+            className='px-6 py-2 bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white font-semibold hover:from-[#7d3053] hover:to-[#894233] rounded-4xl transition-colors'
+          >
+            Add New Filing
+          </button>
+        </div>
+
+        {/* Filters */}
+        <div className='flex flex-col md:flex-row gap-4 items-start md:items-center'>
+          <div className='flex-1'>
+            <input
+              type='text'
+              placeholder='Search by income, tax amount, or registration type...'
+              className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              value={filters.search}
+              onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+            />
+          </div>
+
+          <div className='flex gap-4'>
+            <select
+              className='px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              value={filters.financialYear}
+              onChange={(e) => setFilters(prev => ({ ...prev, financialYear: e.target.value }))}
+            >
+              <option value='all'>All Financial Years</option>
+              {getFinancialYears().map(fy => (
+                <option key={fy.value} value={fy.value}>
+                  {fy.label}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className='px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              value={filters.sortBy}
+              onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
+            >
+              <option value='filingDate'>Sort by Filing Date</option>
+              <option value='income'>Sort by Income</option>
+              <option value='totalTax'>Sort by Total Tax</option>
+              <option value='createdAt'>Sort by Created Date</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Summary Stats */}
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+          <div className=' bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white  p-4 rounded-4xl border border-blue-200'>
+            <div className='text-sm  font-medium'>Total Filings <span className='text-neutral-200'>(selected financial year)</span></div>
+            <div className='text-4xl font-bold '>
+              {filteredFilings?.length || 0}
+            </div>
+          </div>
+
+          <div className='bg-white p-4 rounded-4xl border border-green-200'>
+            <div className='text-sm text-green-600 font-medium'>Total Income <span className='text-neutral-500'>(selected financial year)</span></div>
+            <div className='text-4xl font-bold text-green-800'>
+              {formatCurrency(filteredFilings?.reduce((sum, filing) => sum + (filing?.income || 0), 0) || 0)}
+            </div>
+          </div>
+
+          <div className='bg-white p-4 rounded-4xl border border-red-200'>
+            <div className='text-sm text-red-600 font-medium'>Total Tax <span className='text-neutral-500'>(selected financial year)</span></div>
+            <div className='text-4xl font-bold text-red-800'>
+              {formatCurrency(filteredFilings?.reduce((sum, filing) => sum + (filing?.totalTaxPayable?.totalTax || 0), 0) || 0)}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className='bg-[#F5F4F1] rounded-2xl md:rounded-4xl flex-1 flex flex-col min-h-0'>
+      {/* Filings Table */}
+      <div className='flex-1 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden'>
         {isMobile ? renderMobileView() : renderDesktopView()}
       </div>
 
-      {/* Summary Section */}
-      {filteredFilings && filteredFilings.length > 0 && (
-        <div className='bg-[#F5F4F1] rounded-2xl md:rounded-4xl p-4 flex-shrink-0'>
-          <div className='text-sm font-semibold mb-2'>Summary</div>
-          <div className='grid grid-cols-2 md:grid-cols-5 gap-4 text-sm'>
-            <div>
-              <span className='text-gray-600'>Total Filings: </span>
-              <span className='font-semibold'>{filteredFilings.length}</span>
-            </div>
-            <div>
-              <span className='text-gray-600'>Total Income: </span>
-              <span className='font-semibold text-green-700'>
-                {formatCurrency(filteredFilings.reduce((sum, f) => sum + (f.income || 0), 0))}
-              </span>
-            </div>
-            <div>
-              <span className='text-gray-600'>Total Tax: </span>
-              <span className='font-semibold text-red-600'>
-                {formatCurrency(filteredFilings.reduce((sum, f) => sum + (f.totalTaxPayable?.totalTax || 0), 0))}
-              </span>
-            </div>
-            <div>
-              <span className='text-gray-600'>Total IGST: </span>
-              <span className='font-semibold'>
-                {formatCurrency(filteredFilings.reduce((sum, f) => sum + (parseFloat(f.totalTaxPayable?.igst) || 0), 0))}
-              </span>
-            </div>
-            <div>
-              <span className='text-gray-600'>Total CESS: </span>
-              <span className='font-semibold'>
-                {formatCurrency(filteredFilings.reduce((sum, f) => sum + (parseFloat(f.totalTaxPayable?.cess) || 0), 0))}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   )
 }

@@ -31,6 +31,9 @@ export async function POST(req) {
                 compositionTax: body.totalTaxPayable?.compositionTax
             },
             typeOfRegistration: typeOfRegistration,
+            gstr1: body?.gstr1 || '',
+            gstr3b: body?.gstr3b || '',
+            gstr9: body?.gstr9 || '',
         })
 
         return NextResponse.json({ success: true, filing: newFiling })
