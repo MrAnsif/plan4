@@ -48,8 +48,13 @@ const page = () => {
       setIsMobile(window.innerWidth < 768);
     };
 
+    // Initial check
     checkScreenSize();
+    
+    // Set up event listener
     window.addEventListener('resize', checkScreenSize);
+    
+    // Clean up
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
@@ -241,15 +246,15 @@ const page = () => {
   }
 
   if (loading) {
-    return <div className="place-content-center"><Loader /></div>
+    return <div className="flex items-center justify-center h-screen"><Loader /></div>
   }
 
   if (error) {
     return (
-      <div className='text-[#101E25] h-screen w-full flex flex-col p-10 gap-y-4'>
+      <div className='text-[#101E25] h-screen w-full flex flex-col p-4 md:p-10 gap-y-4'>
         <div className='flex flex-col items-center justify-center flex-1 gap-4'>
           <div className='text-red-500 text-xl font-semibold'>Error Loading Filings</div>
-          <div className='text-gray-600'>{error}</div>
+          <div className='text-gray-600 text-center'>{error}</div>
           <button
             onClick={() => window.location.reload()}
             className='px-4 py-2 bg-gradient-to-tr from-[#f25ca0] to-[#f1765b] text-white rounded-4xl hover:bg-gradient-to-bl hover:from-[#c1497f] hover:to-[#b35743]'
@@ -266,7 +271,6 @@ const page = () => {
     setIsAdding(true)
 
     try {
-
       const response = await fetch('/api/filing/add', {
         method: 'POST',
         headers: {
@@ -330,14 +334,12 @@ const page = () => {
       const result = await response.json()
 
       if (response.ok) {
-
         const res = await fetch(`/api/filing/${customerId}`)
         const data = await res.json()
         setFilingsData(data.filings)
         setIsViewEditFiling(false)
         setSelectedFiling(null)
         alert('Filing updated successfully')
-
       } else {
         console.error('Failed to update filing data', result.error)
         alert(`Failed to update filing: ${result.error || 'Unknown error'}`)
@@ -352,14 +354,14 @@ const page = () => {
 
   if (isAddFiling) {
     return (
-      <div className="h-screen w-screen fixed top-0 left-0 flex items-center justify-center bg-[#000]/50 backdrop-blur-lg z-50">
-        <form onSubmit={handleAddFiling} className="bg-white px-6 py-3 rounded-lg shadow-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-lg z-50 p-4">
+        <form onSubmit={handleAddFiling} className="bg-white p-4 md:p-6 rounded-lg shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
           <h2 className="text-xl font-bold mb-4">Add New Filing</h2>
 
           <div className="mb-4">
             <label className='block text-sm font-medium mb-1'>Type of Registration</label>
             <select
-              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={addFilingData.typeOfRegistration}
               onChange={(e) => handleInputChange(null, 'typeOfRegistration', e.target.value)}
             >
@@ -372,7 +374,7 @@ const page = () => {
             <label className='block text-sm font-medium mb-1'>Filing Date</label>
             <input
               type='date'
-              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={addFilingData.filingDate}
               onChange={(e) => handleInputChange(null, 'filingDate', e.target.value)}
             />
@@ -384,7 +386,7 @@ const page = () => {
               type='number'
               min="0"
               step="0.01"
-              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={addFilingData.income}
               onChange={(e) => handleInputChange(null, 'income', e.target.value)}
             />
@@ -396,7 +398,7 @@ const page = () => {
               type='number'
               min="0"
               step="0.01"
-              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={addFilingData.totalTaxPayable.totalTax}
               onChange={(e) => handleInputChange('totalTaxPayable', 'totalTax', e.target.value)}
             />
@@ -412,7 +414,7 @@ const page = () => {
                       type='number'
                       min="0"
                       step='0.01'
-                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                       value={addFilingData.totalTaxPayable.cgst}
                       onChange={(e) => handleInputChange('totalTaxPayable', 'cgst', e.target.value)}
                     />
@@ -423,7 +425,7 @@ const page = () => {
                       type='number'
                       min="0"
                       step='0.01'
-                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                       value={addFilingData.totalTaxPayable.sgst}
                       onChange={(e) => handleInputChange('totalTaxPayable', 'sgst', e.target.value)}
                     />
@@ -434,7 +436,7 @@ const page = () => {
                       type='number'
                       min="0"
                       step='0.01'
-                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                       value={addFilingData.totalTaxPayable.igst}
                       onChange={(e) => handleInputChange('totalTaxPayable', 'igst', e.target.value)}
                     />
@@ -445,7 +447,7 @@ const page = () => {
                       type='number'
                       min="0"
                       step='0.01'
-                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                       value={addFilingData.totalTaxPayable.cess}
                       onChange={(e) => handleInputChange('totalTaxPayable', 'cess', e.target.value)}
                     />
@@ -461,7 +463,7 @@ const page = () => {
                 <label className='block text-sm font-medium mb-1'>GSTR 1</label>
                 <input
                   type='text'
-                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                   value={addFilingData.gstr1}
                   onChange={(e) => handleInputChange(null, 'gstr1', e.target.value)}
                 />
@@ -470,7 +472,7 @@ const page = () => {
                 <label className='block text-sm font-medium mb-1'>GSTR 3B </label>
                 <input
                   type='text'
-                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                   value={addFilingData.gstr3b}
                   onChange={(e) => handleInputChange(null, 'gstr3b', e.target.value)}
                 />
@@ -479,7 +481,7 @@ const page = () => {
                 <label className='block text-sm font-medium mb-1'>GSTR 9 </label>
                 <input
                   type='text'
-                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                   value={addFilingData.gstr9}
                   onChange={(e) => handleInputChange(null, 'gstr9', e.target.value)}
                 />
@@ -487,7 +489,7 @@ const page = () => {
             </div>
           </div>
 
-          <div className="flex justify-end gap-4 mt-6 ">
+          <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"
               onClick={() => setIsAddFiling(false)}
@@ -500,7 +502,7 @@ const page = () => {
               disabled={isAdding}
               className='px-6 py-2 bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white font-semibold hover:from-[#F25CA0] hover:to-[#F1765B] rounded-4xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
             >
-              {isAdding ? 'Adding' : 'Add Filing'}
+              {isAdding ? 'Adding...' : 'Add Filing'}
             </button>
           </div>
         </form>
@@ -510,14 +512,14 @@ const page = () => {
 
   if (isViewEditFiling && selectedFiling) {
     return (
-      <div className="h-screen w-screen fixed top-0 left-0 flex items-center justify-center bg-[#000]/50 backdrop-blur-lg z-50">
-        <form onSubmit={handleUpdateFiling} className="bg-white px-6 py-3 rounded-lg shadow-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-lg z-50 p-4">
+        <form onSubmit={handleUpdateFiling} className="bg-white p-4 md:p-6 rounded-lg shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
           <h2 className="text-xl font-bold mb-4">Edit Filing Details</h2>
 
           <div className="mb-4">
             <label className='block text-sm font-medium mb-1'>Type of Registration</label>
             <select
-              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={editFilingData.typeOfRegistration}
               onChange={(e) => handleEditInputChange(null, 'typeOfRegistration', e.target.value)}
             >
@@ -530,7 +532,7 @@ const page = () => {
             <label className='block text-sm font-medium mb-1'>Filing Date</label>
             <input
               type='date'
-              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={editFilingData.filingDate}
               onChange={(e) => handleEditInputChange(null, 'filingDate', e.target.value)}
             />
@@ -542,7 +544,7 @@ const page = () => {
               type='number'
               min="0"
               step="0.01"
-              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={editFilingData.income}
               onChange={(e) => handleEditInputChange(null, 'income', e.target.value)}
             />
@@ -554,7 +556,7 @@ const page = () => {
               type='number'
               min="0"
               step="0.01"
-              className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
               value={editFilingData.totalTaxPayable?.totalTax || ''}
               onChange={(e) => handleEditInputChange('totalTaxPayable', 'totalTax', e.target.value)}
             />
@@ -570,7 +572,7 @@ const page = () => {
                       type='number'
                       min="0"
                       step='0.01'
-                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                       value={editFilingData.totalTaxPayable?.cgst || ''}
                       onChange={(e) => handleEditInputChange('totalTaxPayable', 'cgst', e.target.value)}
                     />
@@ -581,7 +583,7 @@ const page = () => {
                       type='number'
                       min="0"
                       step='0.01'
-                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                       value={editFilingData.totalTaxPayable?.sgst || ''}
                       onChange={(e) => handleEditInputChange('totalTaxPayable', 'sgst', e.target.value)}
                     />
@@ -592,7 +594,7 @@ const page = () => {
                       type='number'
                       min="0"
                       step='0.01'
-                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                       value={editFilingData.totalTaxPayable?.igst || ''}
                       onChange={(e) => handleEditInputChange('totalTaxPayable', 'igst', e.target.value)}
                     />
@@ -603,7 +605,7 @@ const page = () => {
                       type='number'
                       min="0"
                       step='0.01'
-                      className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                      className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                       value={editFilingData.totalTaxPayable?.cess || ''}
                       onChange={(e) => handleEditInputChange('totalTaxPayable', 'cess', e.target.value)}
                     />
@@ -619,7 +621,7 @@ const page = () => {
                 <label className='block text-sm font-medium mb-1'>GSTR 1 </label>
                 <input
                   type='text'
-                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                   value={editFilingData.gstr1 || ''}
                   onChange={(e) => handleEditInputChange(null, 'gstr1', e.target.value)}
                 />
@@ -628,7 +630,7 @@ const page = () => {
                 <label className='block text-sm font-medium mb-1'>GSTR 3B </label>
                 <input
                   type='text'
-                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                   value={editFilingData.gstr3b || ''}
                   onChange={(e) => handleEditInputChange(null, 'gstr3b', e.target.value)}
                 />
@@ -637,7 +639,7 @@ const page = () => {
                 <label className='block text-sm font-medium mb-1'>GSTR 9 </label>
                 <input
                   type='text'
-                  className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+                  className='w-full p-2 md:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
                   value={editFilingData.gstr9 || ''}
                   onChange={(e) => handleEditInputChange(null, 'gstr9', e.target.value)}
                 />
@@ -645,7 +647,7 @@ const page = () => {
             </div>
           </div>
 
-          <div className="flex justify-end gap-4 mt-6 ">
+          <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"
               onClick={() => {
@@ -661,7 +663,7 @@ const page = () => {
               disabled={isEditing}
               className='px-6 py-2 bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white font-semibold hover:from-[#F25CA0] hover:to-[#F1765B] rounded-4xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
             >
-              {isEditing ? 'Updating' : 'Update Filing'}
+              {isEditing ? 'Updating...' : 'Update Filing'}
             </button>
           </div>
         </form>
@@ -674,7 +676,6 @@ const page = () => {
 
     if (confirmed) {
       try {
-
         const response = await fetch(`/api/filing/${id}`, { method: "DELETE" })
 
         if (!response.ok) {
@@ -697,7 +698,7 @@ const page = () => {
 
   const renderMobileView = () => (
     <>
-      <div className="text-sm font-semibold px-4 py-4 pb-2 grid grid-cols-[1fr_1fr_0.5fr_0.2fr] uppercase flex-shrink-0">
+      <div className="text-sm font-semibold px-4 py-4 pb-2 grid grid-cols-[1fr_1fr_0.5fr_0.2fr] uppercase">
         <div>Filing Date</div>
         <div>Income</div>
         <div>Total Tax</div>
@@ -724,7 +725,7 @@ const page = () => {
                   }}
                   className='text-red-400'
                 >
-                  <Trash2 />
+                  <Trash2 size={18} />
                 </button>
               </div>
             ))
@@ -736,7 +737,7 @@ const page = () => {
 
   const renderDesktopView = () => (
     <>
-      <div className="text-base font-semibold p-4 pb-2 grid grid-cols-8 uppercase flex-shrink-0">
+      <div className="text-base font-semibold p-4 pb-2 grid grid-cols-8 uppercase">
         <div>Filing Date</div>
         <div>Income</div>
         <div>Total Tax</div>
@@ -771,7 +772,7 @@ const page = () => {
                   }}
                   className='text-red-400 cursor-pointer bg-white border border-neutral-300 w-fit p-2 rounded-2xl'
                 >
-                  <Trash2 />
+                  <Trash2 size={18} />
                 </button>
               </div>
             ))
@@ -782,22 +783,21 @@ const page = () => {
   );
 
   return (
-    <div className='text-[#101E25] h-screen w-full flex flex-col p-10 gap-y-4'>
+    <div className='text-[#101E25] min-h-screen w-full flex flex-col p-4 md:p-10 gap-y-4'>
       {/* Header */}
       <div className='flex flex-col gap-4'>
-        <div className='flex items-center justify-between'>
+        <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           {/* Back Link */}
-          <div className='flex justify-start'>
-            <Link
-              href='/customers'
-              className='bg-clip-text text-transparent bg-gradient-to-tr from-[#ce2e0a] to-[#d60764] hover:from-[#803726] hover:to-[#7c2f52] font-medium flex items-center gap-2'
-            >
-              ← Back to Customers
-            </Link>
-          </div>
+          <Link
+            href='/customers'
+            className='bg-clip-text text-transparent bg-gradient-to-tr from-[#ce2e0a] to-[#d60764] hover:from-[#803726] hover:to-[#7c2f52] font-medium flex items-center gap-2 w-fit'
+          >
+            ← Back to Customers
+          </Link>
+          
           <button
             onClick={() => setIsAddFiling(true)}
-            className='px-6 py-2 bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white font-semibold hover:from-[#7d3053] hover:to-[#894233] rounded-4xl transition-colors'
+            className='px-4 md:px-6 py-2 bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white font-semibold hover:from-[#7d3053] hover:to-[#894233] rounded-4xl transition-colors w-full md:w-auto'
           >
             Add New Filing
           </button>
@@ -805,7 +805,7 @@ const page = () => {
 
         {/* Filters */}
         <div className='flex flex-col md:flex-row gap-4 items-start md:items-center'>
-          <div className='flex-1'>
+          <div className='flex-1 w-full'>
             <input
               type='text'
               placeholder='Search by income, tax amount, or registration type...'
@@ -815,9 +815,9 @@ const page = () => {
             />
           </div>
 
-          <div className='flex gap-4'>
+          <div className='flex flex-col md:flex-row gap-4 w-full md:w-auto'>
             <select
-              className='px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              className='px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent w-full md:w-auto'
               value={filters.financialYear}
               onChange={(e) => setFilters(prev => ({ ...prev, financialYear: e.target.value }))}
             >
@@ -830,7 +830,7 @@ const page = () => {
             </select>
 
             <select
-              className='px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent'
+              className='px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F3BEBA] focus:border-transparent w-full md:w-auto'
               value={filters.sortBy}
               onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
             >
@@ -844,23 +844,23 @@ const page = () => {
 
         {/* Summary Stats */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-          <div className=' bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white  p-4 rounded-4xl border border-blue-200'>
-            <div className='text-sm  font-medium'>Total Filings <span className='text-neutral-200'>(selected financial year)</span></div>
-            <div className='text-4xl font-bold '>
+          <div className='bg-gradient-to-tr from-[#F1765B] to-[#F25CA0] text-white p-4 rounded-4xl border border-blue-200'>
+            <div className='text-sm font-medium'>Total Filings <span className='text-neutral-200'>(selected financial year)</span></div>
+            <div className='text-2xl md:text-4xl font-bold'>
               {filteredFilings?.length || 0}
             </div>
           </div>
 
           <div className='bg-white p-4 rounded-4xl border border-green-200'>
             <div className='text-sm text-green-600 font-medium'>Total Income <span className='text-neutral-500'>(selected financial year)</span></div>
-            <div className='text-4xl font-bold text-green-800'>
+            <div className='text-2xl md:text-4xl font-bold text-green-800'>
               {formatCurrency(filteredFilings?.reduce((sum, filing) => sum + (filing?.income || 0), 0) || 0)}
             </div>
           </div>
 
           <div className='bg-white p-4 rounded-4xl border border-red-200'>
             <div className='text-sm text-red-600 font-medium'>Total Tax <span className='text-neutral-500'>(selected financial year)</span></div>
-            <div className='text-4xl font-bold text-red-800'>
+            <div className='text-2xl md:text-4xl font-bold text-red-800'>
               {formatCurrency(filteredFilings?.reduce((sum, filing) => sum + (filing?.totalTaxPayable?.totalTax || 0), 0) || 0)}
             </div>
           </div>
@@ -871,8 +871,6 @@ const page = () => {
       <div className='flex-1 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden'>
         {isMobile ? renderMobileView() : renderDesktopView()}
       </div>
-
-
     </div>
   )
 }

@@ -176,13 +176,15 @@ const page = () => {
   }
 
   return (
-    <div className='text-[#101E25] p-10 w-full gap-y-4'>
-      <div className='flex items-center justify-between mb-7 px-5'>
+    <div className='text-[#101E25] p-5 md:p-10 w-full gap-y-4'>
+      <div className='flex items-center justify-between mb-7 px-2 md:px-5'>
         <h1 className='text-3xl font-bold hidden md:block'>Customer Details</h1>
-        <div className="flex gap-10 ">
-          <button className='flex gap-1 font-semibold text-[#0F1322] px-4 py-2 rounded-full bg-gradient-to-tr from-[#F1765B]/20 to-[#F25CA0]/20 hover:underline' onClick={() => { router.push(`/customers/${id}/filing`) }} ><Book width={20} height={24} />Filing</button>
-          <button className='flex gap-1 font-semibold text-[#0F1322] px-4 py-2 rounded-full bg-gradient-to-tr from-[#F1765B]/20 to-[#F25CA0]/20  hover:underline' onClick={() => { router.push(`/customers/${id}/edit`) }} ><UserPen width={20} height={24} />Edit Details</button>
-          <button className='flex gap-1 font-semibold text-red-500 px-4 py-2 rounded-full bg-gradient-to-tr from-[#F1765B]/20 to-[#F25CA0]/20  hover:underline' onClick={handleDelete}><UserMinus width={20} height={24} />Delete Customer</button>
+        <div className="flex flex-col md:flex-row gap-2 md:gap-10 text-sm md:text-base">
+          <span className='flex gap-2'>
+            <button className='flex items-center gap-1 font-semibold text-[#0F1322] px-2 md:px-4 py-2 rounded-full bg-gradient-to-tr from-[#F1765B]/20 to-[#F25CA0]/20 hover:underline' onClick={() => { router.push(`/customers/${id}/filing`) }} ><Book width={20} height={24} />Filing</button>
+            <button className='flex items-center gap-1 font-semibold text-[#0F1322] px-2 md:px-4 py-2 rounded-full bg-gradient-to-tr from-[#F1765B]/20 to-[#F25CA0]/20  hover:underline' onClick={() => { router.push(`/customers/${id}/edit`) }} ><UserPen width={20} height={24} />Edit Details</button>
+          </span>
+          <button className='flex items-center gap-1 font-semibold text-red-500 px-2 md:px-4 py-2 rounded-full bg-gradient-to-tr from-[#F1765B]/20 to-[#F25CA0]/20  hover:underline' onClick={handleDelete}><UserMinus width={20} height={24} />Delete Customer</button>
         </div>
       </div>
 

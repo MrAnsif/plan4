@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { UserPlus } from "lucide-react"
 import { Users } from "lucide-react"
 import { useEffect, useState } from "react"
+import Image from "next/image"
 
 const items = [
   {
@@ -95,7 +96,13 @@ const AppSidebar = () => {
       `}>
         <div>
           <div className="text-white text-xl my-4 flex justify-center px-4">
-            <Link href='/dashboard' className="" >
+            <Link href='/dashboard' className="flex items-center pr-2" >
+              <Image
+                src='/logo.webp'
+                alt="logo"
+                width={45}
+                height={45}
+              />
               <h1 className="text-neutral-300 font-bold text-2xl uppercase">Plan 4</h1>
             </Link>
           </div>

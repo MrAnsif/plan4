@@ -184,14 +184,14 @@ const page = () => {
       <div className='flex items-center justify-between flex-shrink-0'>
         <div className="flex gap-4 items-end w-full px-2 flex-col md:flex-row">
           <input
-            className='bg-[#F5F4F1] p-2 rounded-lg'
+            className='bg-[#F5F4F1] p-2 rounded-lg w-full md:w-auto'
             type="text"
             placeholder='Search...'
             value={filters.search}
             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
           />
 
-          <div className='gap-x-6'>
+          <div className='gap-x-6 flex'>
             <select
               value={filters.type}
               onChange={(e) => setFilters({ ...filters, type: e.target.value })}
